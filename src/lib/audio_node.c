@@ -23,12 +23,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
+#include <clog/clog.h>
 #include <thunder/audio_node.h>
-#include <tyran/tyran_log.h>
 
 void thunder_audio_node_init(thunder_audio_node* self, thunder_audio_node_output_func func, void* other_self)
 {
 	self->output = func;
-	TYRAN_ASSERT(other_self != 0, "Must provide valid self");
+	CLOG_ASSERT(other_self != 0, "Must provide valid self");
 	self->_self = other_self;
 }

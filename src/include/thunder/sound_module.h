@@ -34,37 +34,32 @@ struct tyran_memory;
 struct thunder_audio_node_player;
 
 typedef struct thunder_sound_module_sound {
-  tyran_boolean is_used;
-  tyran_boolean should_play;
-  tyran_boolean waiting_for_play;
-  float time;
-  tyran_number volume;
-  float pan;
-  int loop;
-  struct thunder_sound_module_sound *sync_with_sound;
-  struct thunder_audio_compositor_node *node;
+	tyran_boolean is_used;
+	tyran_boolean should_play;
+	tyran_boolean waiting_for_play;
+	float time;
+	tyran_number volume;
+	float pan;
+	int loop;
+	struct thunder_sound_module_sound* sync_with_sound;
+	struct thunder_audio_compositor_node* node;
 } thunder_sound_module_sound;
 
 typedef struct thunder_sound_module {
-  thunder_sound_driver driver;
-  struct tyran_memory *memory;
-  thunder_audio_compositor compositor;
-  tyran_boolean initialized;
+	thunder_sound_driver driver;
+	struct tyran_memory* memory;
+	thunder_audio_compositor compositor;
+	tyran_boolean initialized;
 } thunder_sound_module;
 
-void thunder_sound_module_init(thunder_sound_module *_self,
-                               struct tyran_memory *memory);
+void thunder_sound_module_init(thunder_sound_module* _self, struct tyran_memory* memory);
 
-void thunder_sound_module_update(thunder_sound_module *_self);
+void thunder_sound_module_update(thunder_sound_module* _self);
 
-void thunder_sound_module_play_sound(thunder_sound_module *self, int sound_id,
-                                     int wave_id, tyran_number volume, int loop,
-                                     tyran_boolean should_play);
+void thunder_sound_module_play_sound(thunder_sound_module* self, int sound_id, int wave_id, tyran_number volume, int loop, tyran_boolean should_play);
 
-void thunder_sound_module_debug_sine_wave(thunder_sound_module *self,
-                                          struct tyran_memory *memory);
+void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct tyran_memory* memory);
 
-void thunder_sound_module_add_node(thunder_sound_module *self,
-                                   struct thunder_audio_node node);
+void thunder_sound_module_add_node(thunder_sound_module* self, struct thunder_audio_node node);
 
 #endif

@@ -23,10 +23,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
-#include <thunder/sound_types.h>
 #include <thunder/audio_node.h>
 #include <thunder/sound_module.h>
-#include <tyran/tyran_clib.h>
+#include <thunder/sound_types.h>
+#include <tiny_libc/tiny_libc.h>
 
 typedef struct debug_sine {
 	int time;
@@ -47,7 +47,7 @@ static void generate_sine(void* _self, thunder_sample* output, int sample_count)
 thunder_audio_node make_sine_node(int max_count)
 {
 	thunder_audio_node self;
-	debug_sine* data = tyran_malloc_type(debug_sine);
+	debug_sine* data = tc_malloc_type(debug_sine);
 
 	self.output = generate_sine;
 	self._self = data;

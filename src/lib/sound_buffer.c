@@ -23,24 +23,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
+#include <clog/clog.h>
 #include <limits.h>
 #include <thunder/sound_buffer.h>
-#include <tyran/tyran_log.h>
 #include <tyran/tyran_memory.h>
 
 void thunder_audio_buffer_write(thunder_audio_buffer* self, const thunder_sample* samples, int sample_count)
 {
-	TYRAN_ASSERT(self->atom_size == sample_count, "Wrong store size:%d", sample_count);
+	CLOG_ASSERT(self->atom_size == sample_count, "Wrong store size:%d", sample_count);
 
 	if (self->write_index == self->read_index) {
-		return;
+		// return;
 	}
 
 	int index = self->write_index;
 
 	thunder_sample_output_s16* buffer = self->buffers[index];
 
-	tyran_memcpy_octets(buffer, samples, sample_count * sizeof(thunder_sample));
+	tc_memcpy_octets(buffer, samples, sample_count * sizeof(thunder_sample));
 
 	if (!self->read_buffer) {
 		self->read_buffer = self->buffers[0];
@@ -59,14 +59,14 @@ void thunder_audio_buffer_read(thunder_audio_buffer* self, thunder_sample_output
 	if (samples_to_read > self->read_buffer_samples_left) {
 		samples_to_read = self->read_buffer_samples_left;
 	}
-	tyran_memcpy_type(thunder_sample_output_s16, output, self->read_buffer, samples_to_read);
+	tc_memcpy_type(thunder_sample_output_s16, output, self->read_buffer, samples_to_read);
 	sample_count -= samples_to_read;
 	self->read_buffer_samples_left -= samples_to_read;
 
 	if (self->read_buffer_samples_left == 0) {
 		if (self->write_index == self->read_index) {
 			thunder_sample_output_s16* zero = output + samples_to_read;
-			tyran_mem_clear_type_n(zero, sample_count);
+			tc_mem_clear_type_n(zero, sample_count);
 			return;
 		}
 		self->read_index++;
@@ -115,8 +115,8 @@ float thunder_audio_buffer_percentage_full(thunder_audio_buffer* self)
 void thunder_audio_buffer_free(thunder_audio_buffer* self)
 {
 	for (int i = 0; i < self->buffer_count; ++i) {
-		tyran_free(self->buffers[i]);
+		tc_free(self->buffers[i]);
 	}
-	tyran_free(self->buffers);
+	tc_free(self->buffers);
 	self->buffer_count = 0;
 }

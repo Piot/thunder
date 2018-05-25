@@ -28,7 +28,7 @@ SOFTWARE.
 #include <thunder/sound_module.h>
 #include <tyran/tyran_memory.h>
 
-#include <tyran/tyran_log.h>
+#include <clog/clog.h>
 
 #include <math.h>
 
@@ -67,6 +67,6 @@ void thunder_sound_module_init(thunder_sound_module* self, struct tyran_memory* 
 	thunder_audio_compositor_update(&self->compositor);
 	thunder_audio_compositor_update(&self->compositor);
 	thunder_audio_compositor_update(&self->compositor);
-	// thunder_sound_driver_init(&self->driver, &self->compositor.buffer);
+	thunder_sound_driver_init(&self->driver, &self->compositor.buffer);
 	self->initialized = TYRAN_TRUE;
 }

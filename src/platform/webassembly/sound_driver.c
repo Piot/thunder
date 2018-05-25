@@ -23,9 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
+#include <clog/clog.h>
 #include <thunder/platform/webassembly/sound_driver.h>
 #include <thunder/sound_buffer.h>
-#include <tyran/tyran_log.h>
 #include <tyran/tyran_types.h>
 
 #include <SDL2/SDL.h>
@@ -39,15 +39,15 @@ static void fill_buffer_callback(void* _self, Uint8* target, int octet_length)
 	thunder_audio_buffer* sound_buffer = self->buffer;
 
 	if ((octet_length % 4) != 0) {
-		TYRAN_LOG_ERROR("ERROR!!!!!");
+		CLOG_ERROR("ERROR!!!!! Wrong octet_length");
 	}
 	size_t sample_count_to_fill = octet_length / sizeof(float);
 	if (sample_count_to_fill > 16 * 1024) {
-		TYRAN_LOG_ERROR("ERROR!!!!!");
+		CLOG_ERROR("ERROR!!!!! sample_count too big");
 		return;
 	}
 	if ((sample_count_to_fill % 8) != 0) {
-		TYRAN_LOG_ERROR("DIVISON ERR");
+		CLOG_ERROR("DIVISON ERR");
 		return;
 	}
 
@@ -92,16 +92,16 @@ void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer*
 	want.userdata = self;
 	SDL_AudioDeviceID result = SDL_OpenAudioDevice(0, 0, &want, &have, 0);
 	if (result <= 0) {
-		TYRAN_LOG("FAILED TO OPEN AUDIO!");
+		CLOG_WARN("FAILED TO OPEN AUDIO!");
 		return;
 	}
 	self->device_handle = result;
 	if (have.format != want.format) {
-		TYRAN_LOG("We didn't get what we wanted.%d", have.format);
+		CLOG_WARN("We didn't get what we wanted.%d", have.format);
 		return;
 	}
-	TYRAN_LOG("Starting playback:%d", have.format);
-	TYRAN_LOG("Starting freq:%d", have.freq);
+	CLOG_VERBOSE("Starting playback:%d", have.format);
+	CLOG_VERBOSE("Starting freq:%d", have.freq);
 	start_playback(self);
 }
 

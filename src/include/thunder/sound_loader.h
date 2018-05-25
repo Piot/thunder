@@ -31,7 +31,6 @@ SOFTWARE.
 struct thunder_sound_wave;
 struct tyran_memory;
 
-void thunder_sound_loader_load(struct tyran_memory *memory, const u8t *data,
-                               int octets, struct thunder_sound_wave *sound);
+void thunder_sound_loader_load(struct tyran_memory* memory, const u8t* data, int octets, struct thunder_sound_wave* sound);
 
 #endif

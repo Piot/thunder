@@ -23,9 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
+#include <clog/clog.h>
 #include <thunder/platform/ios/sound_driver.h>
 #include <thunder/sound_buffer.h>
-#include <tyran/tyran_log.h>
 #include <tyran/tyran_types.h>
 
 const int audio_buffer_size = 4 * 1024;
@@ -37,7 +37,7 @@ static void fill_buffer_callback(void* _self, AudioQueueRef queue, AudioQueueBuf
 
 	buffer->mAudioDataByteSize = buffer->mAudioDataBytesCapacity;
 	if ((buffer->mAudioDataBytesCapacity % 4) != 0) {
-		TYRAN_LOG_WARN("ERROR!!!!!");
+		CLOG_WARN("ERROR!!!!!");
 	}
 	uint sample_count = buffer->mAudioDataByteSize / sizeof(thunder_sample_output_s16);
 	thunder_sample_output_s16* target = (thunder_sample_output_s16*) buffer->mAudioData;
@@ -55,7 +55,7 @@ static void create_and_fill_buffers(thunder_sound_driver* self)
 
 	for (int i = 0; i < buffer_count; ++i) {
 		int err = AudioQueueAllocateBuffer(self->zQueue, audio_buffer_size, &buffers[i]);
-		TYRAN_ASSERT(err == 0, "Couldn't allocate buffer");
+		CLOG_ASSERT(err == 0, "Couldn't allocate buffer");
 		fill_buffer_callback(self, self->zQueue, buffers[i]);
 	}
 }
@@ -63,7 +63,7 @@ static void create_and_fill_buffers(thunder_sound_driver* self)
 static void start_playback(thunder_sound_driver* self)
 {
 	UInt32 err = AudioQueueStart(self->zQueue, 0);
-	TYRAN_ASSERT(err == 0, "Audio queue start failed");
+	CLOG_ASSERT(err == 0, "Audio queue start failed");
 }
 
 static void open_output(thunder_sound_driver* self, float sample_rate)
@@ -80,7 +80,7 @@ static void open_output(thunder_sound_driver* self, float sample_rate)
 	zFormat.mReserved = 0;
 
 	UInt32 err = AudioQueueNewOutput(&zFormat, fill_buffer_callback, self, 0, kCFRunLoopCommonModes, 0, &self->zQueue);
-	TYRAN_ASSERT(err == 0, "AudioQueueNewOutput err:%d", (unsigned int) err);
+	CLOG_ASSERT(err == 0, "AudioQueueNewOutput err:%d", (unsigned int) err);
 }
 
 void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)

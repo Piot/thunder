@@ -23,11 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
+#include <clog/clog.h>
 #include <thunder/audio_node.h>
 #include <thunder/sound_buffer.h>
 #include <thunder/sound_compositor.h>
 #include <thunder/sound_module.h>
-#include <tyran/tyran_log.h>
 #include <tyran/tyran_memory.h>
 
 static const int THUNDER_ATOM_SAMPLE_COUNT = 2 * 1024;
@@ -35,7 +35,7 @@ static const int THUNDER_ATOM_SAMPLE_COUNT = 2 * 1024;
 static void mix_down_using_volume(thunder_mix_sample* source, int size, float mix_down_volume, thunder_sample* target)
 {
 	const int DIVISOR = 8;
-	TYRAN_ASSERT((THUNDER_ATOM_SAMPLE_COUNT % DIVISOR) == 0, "Illegal divisor");
+	CLOG_ASSERT((THUNDER_ATOM_SAMPLE_COUNT % DIVISOR) == 0, "Illegal divisor");
 	for (int i = 0; i < size / DIVISOR; ++i) {
 		*target = *source++ * mix_down_volume;
 		target++;
@@ -91,10 +91,10 @@ static void adjust_mix_down_volume(thunder_audio_compositor* self, thunder_mix_s
 	}
 	if (optimal_volume < self->mix_down_volume) {
 		self->mix_down_volume = optimal_volume * 0.9f;
-		TYRAN_LOG_VERBOSE("HIGH AMPLITUDE ADJUSTING: Max Found:%d, Dynamics:%f", maximum_amplitude_found, self->mix_down_volume);
+		CLOG_VERBOSE("HIGH AMPLITUDE ADJUSTING: Max Found:%d, Dynamics:%f", maximum_amplitude_found, self->mix_down_volume);
 	} else if (optimal_volume >= self->mix_down_volume + 0.1f) { // It must be a big difference to be bother to increased the volume
 		self->mix_down_volume += (optimal_volume - self->mix_down_volume) / (float) (60 * 30);
-		TYRAN_LOG_VERBOSE("slightly increasing Max Found:%d, Dynamics:%f", maximum_amplitude_found, self->mix_down_volume);
+		CLOG_VERBOSE("slightly increasing Max Found:%d, Dynamics:%f", maximum_amplitude_found, self->mix_down_volume);
 	}
 }
 
@@ -156,12 +156,13 @@ static void compress_to_16_bit(thunder_audio_compositor* self, thunder_sample* o
 	thunder_mix_sample max_amplitude = maximum_amplitude(self->output, THUNDER_ATOM_SAMPLE_COUNT);
 
 	adjust_mix_down_volume(self, max_amplitude);
+	self->mix_down_volume = 1.0f;
 	mix_down_using_volume(self->output, THUNDER_ATOM_SAMPLE_COUNT, self->mix_down_volume, output);
 }
 
 static void clear_buffer(thunder_mix_sample* output)
 {
-	tyran_mem_clear_type_n(output, THUNDER_ATOM_SAMPLE_COUNT);
+	tc_mem_clear_type_n(output, THUNDER_ATOM_SAMPLE_COUNT);
 }
 
 void thunder_audio_compositor_update(thunder_audio_compositor* self)
@@ -190,7 +191,7 @@ void thunder_audio_compositor_init(thunder_audio_compositor* self, struct tyran_
 
 void thunder_audio_compositor_free(thunder_audio_compositor* self)
 {
-	tyran_free(self->output);
-	tyran_free(self->nodes);
+	tc_free(self->output);
+	tc_free(self->nodes);
 	thunder_audio_buffer_free(&self->buffer);
 }

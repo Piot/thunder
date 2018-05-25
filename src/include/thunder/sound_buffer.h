@@ -31,28 +31,23 @@ SOFTWARE.
 struct tyran_memory;
 
 typedef struct thunder_audio_buffer {
-  int atom_size;
-  int buffer_count;
-  thunder_sample_output_s16 **buffers;
-  thunder_sample_output_s16 *read_buffer;
-  int read_buffer_samples_left;
-  int write_index;
-  int read_index;
+	int atom_size;
+	int buffer_count;
+	thunder_sample_output_s16** buffers;
+	thunder_sample_output_s16* read_buffer;
+	int read_buffer_samples_left;
+	int write_index;
+	int read_index;
 } thunder_audio_buffer;
 
-void thunder_audio_buffer_write(thunder_audio_buffer *self,
-                                const thunder_sample *samples,
-                                int sample_count);
+void thunder_audio_buffer_write(thunder_audio_buffer* self, const thunder_sample* samples, int sample_count);
 
-void thunder_audio_buffer_read(thunder_audio_buffer *self,
-                               thunder_sample_output_s16 *output,
-                               int sample_count);
+void thunder_audio_buffer_read(thunder_audio_buffer* self, thunder_sample_output_s16* output, int sample_count);
 
-void thunder_audio_buffer_init(thunder_audio_buffer *self,
-                               struct tyran_memory *memory, int atom_size);
+void thunder_audio_buffer_init(thunder_audio_buffer* self, struct tyran_memory* memory, int atom_size);
 
-void thunder_audio_buffer_free(thunder_audio_buffer *self);
+void thunder_audio_buffer_free(thunder_audio_buffer* self);
 
-float thunder_audio_buffer_percentage_full(thunder_audio_buffer *self);
+float thunder_audio_buffer_percentage_full(thunder_audio_buffer* self);
 
 #endif

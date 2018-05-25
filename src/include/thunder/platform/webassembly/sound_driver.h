@@ -32,8 +32,7 @@ struct thunder_audio_buffer;
 
 #include <SDL2/SDL.h>
 
-typedef struct thunder_sound_driver
-{
+typedef struct thunder_sound_driver {
 	struct thunder_audio_buffer* buffer;
 	SDL_AudioDeviceID device_handle;
 } thunder_sound_driver;
