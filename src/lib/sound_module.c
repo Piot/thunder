@@ -26,7 +26,7 @@ SOFTWARE.
 #include <thunder/audio_node.h>
 #include <thunder/sound_compositor.h>
 #include <thunder/sound_module.h>
-#include <tyran/tyran_memory.h>
+#include <imprint/memory.h>
 
 #include <clog/clog.h>
 
@@ -58,7 +58,7 @@ void thunder_sound_module_add_node(thunder_sound_module* self, thunder_audio_nod
 	self->compositor.nodes[self->compositor.nodes_count++] = node;
 }
 
-void thunder_sound_module_init(thunder_sound_module* self, struct tyran_memory* memory)
+void thunder_sound_module_init(thunder_sound_module* self, struct imprint_memory* memory)
 {
 	self->memory = memory;
 

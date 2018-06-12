@@ -29,7 +29,7 @@ SOFTWARE.
 #include <thunder/sound_buffer.h>
 #include <thunder/sound_types.h>
 
-struct tyran_memory;
+struct imprint_memory;
 struct thunder_audio_node;
 
 typedef struct thunder_audio_compositor {
@@ -42,7 +42,7 @@ typedef struct thunder_audio_compositor {
 	thunder_sample* output_16_bit;
 } thunder_audio_compositor;
 
-void thunder_audio_compositor_init(thunder_audio_compositor* self, struct tyran_memory* memory);
+void thunder_audio_compositor_init(thunder_audio_compositor* self, struct imprint_memory* memory);
 
 void thunder_audio_compositor_update(thunder_audio_compositor* self);
 

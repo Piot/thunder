@@ -28,7 +28,7 @@ SOFTWARE.
 #include <thunder/sound_buffer.h>
 #include <thunder/sound_compositor.h>
 #include <thunder/sound_module.h>
-#include <tyran/tyran_memory.h>
+#include <imprint/memory.h>
 
 static const int THUNDER_ATOM_SAMPLE_COUNT = 2 * 1024;
 
@@ -173,7 +173,7 @@ void thunder_audio_compositor_update(thunder_audio_compositor* self)
 	thunder_audio_buffer_write(&self->buffer, self->output_16_bit, THUNDER_ATOM_SAMPLE_COUNT);
 }
 
-void thunder_audio_compositor_init(thunder_audio_compositor* self, struct tyran_memory* memory)
+void thunder_audio_compositor_init(thunder_audio_compositor* self, struct imprint_memory* memory)
 {
 	self->output = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_mix_sample, THUNDER_ATOM_SAMPLE_COUNT);
 	self->output_16_bit = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample, THUNDER_ATOM_SAMPLE_COUNT);

@@ -26,7 +26,7 @@ SOFTWARE.
 #include <clog/clog.h>
 #include <limits.h>
 #include <thunder/sound_buffer.h>
-#include <tyran/tyran_memory.h>
+#include <imprint/memory.h>
 
 void thunder_audio_buffer_write(thunder_audio_buffer* self, const thunder_sample* samples, int sample_count)
 {
@@ -82,7 +82,7 @@ void thunder_audio_buffer_read(thunder_audio_buffer* self, thunder_sample_output
 	}
 }
 
-void thunder_audio_buffer_init(thunder_audio_buffer* self, tyran_memory* memory, int atom_size)
+void thunder_audio_buffer_init(thunder_audio_buffer* self, imprint_memory* memory, int atom_size)
 {
 	self->buffer_count = 6;
 	self->atom_size = atom_size;

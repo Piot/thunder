@@ -26,7 +26,7 @@ SOFTWARE.
 #include <thunder/audio_node.h>
 #include <thunder/sound_module.h>
 #include <thunder/sound_types.h>
-#include <tiny_libc/tiny_libc.h>
+#include <tiny-libc/tiny_libc.h>
 
 typedef struct debug_sine {
 	int time;
@@ -66,7 +66,7 @@ void add_sine(thunder_sound_module* self, int max_count, int offset)
 	thunder_sound_module_add_node(self, node);
 }
 
-void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct tyran_memory* memory)
+void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct imprint_memory* memory)
 {
 	add_sine(self, 128, 1);
 	add_sine(self, 64, 2);
