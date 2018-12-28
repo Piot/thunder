@@ -51,7 +51,7 @@ static void fill_buffer_callback(void* _self, Uint8* target, int octet_length)
 		return;
 	}
 
-	float* float_target = target;
+	float* float_target = (float*) target;
 	thunder_audio_buffer_read(sound_buffer, temp_buf, sample_count_to_fill);
 	size_t spin = sample_count_to_fill / 8;
 	thunder_sample* source = temp_buf;
