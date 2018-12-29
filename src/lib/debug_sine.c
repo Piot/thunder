@@ -62,12 +62,16 @@ thunder_audio_node make_sine_node(int max_count)
 
 void add_sine(thunder_sound_module* self, int max_count, int offset)
 {
+    (void)offset;
+    
 	thunder_audio_node node = make_sine_node(max_count);
 	thunder_sound_module_add_node(self, node);
 }
 
 void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct imprint_memory* memory)
 {
+    (void) memory;
+    
 	add_sine(self, 128, 1);
 	add_sine(self, 64, 2);
 	add_sine(self, 256, 0);

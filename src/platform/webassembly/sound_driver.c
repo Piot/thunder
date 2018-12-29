@@ -107,5 +107,7 @@ void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer*
 
 void thunder_sound_driver_free(thunder_sound_driver* self)
 {
+    (void) self;
+    
 	SDL_CloseAudio();
 }
