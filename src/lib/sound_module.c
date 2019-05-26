@@ -23,10 +23,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
+#include <imprint/memory.h>
 #include <thunder/audio_node.h>
 #include <thunder/sound_compositor.h>
 #include <thunder/sound_module.h>
-#include <imprint/memory.h>
 
 #include <clog/clog.h>
 
@@ -44,7 +44,6 @@ void thunder_sound_module_update(thunder_sound_module* _self)
 
 	thunder_audio_compositor_update(&self->compositor);
 	if (percentage < 0.40f) {
-		thunder_audio_compositor_update(&self->compositor);
 		thunder_audio_compositor_update(&self->compositor);
 	}
 

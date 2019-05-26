@@ -24,9 +24,9 @@ SOFTWARE.
 
 */
 #include <clog/clog.h>
+#include <imprint/memory.h>
 #include <limits.h>
 #include <thunder/sound_buffer.h>
-#include <imprint/memory.h>
 
 void thunder_audio_buffer_write(thunder_audio_buffer* self, const thunder_sample* samples, int sample_count)
 {
