@@ -27,6 +27,9 @@ SOFTWARE.
 #include <thunder/sound_module.h>
 #include <thunder/sound_types.h>
 #include <tiny-libc/tiny_libc.h>
+#include <stdio.h>
+
+#include <math.h>
 
 typedef struct debug_sine {
 	int time;
@@ -36,10 +39,11 @@ typedef struct debug_sine {
 
 static void generate_sine(void* _self, thunder_sample* output, int sample_count)
 {
+	//printf("sine:%d\n", sample_count);
 	debug_sine* self = _self;
 	for (int i = 0; i < sample_count; ++i) {
-		tyran_number f = sinf(self->offset + (6.28f * (tyran_number) self->time) / (tyran_number) self->max_count);
-		output[i] = f * 32767;
+		tyran_number f = sinf(self->offset + (2 * M_PI * (tyran_number) self->time) / (tyran_number) self->max_count);
+		output[i] = (f * 32767.0f);
 		self->time++;
 	}
 }
@@ -54,6 +58,7 @@ thunder_audio_node make_sine_node(int max_count)
 	self.is_playing = 1;
 	self.channel_count = 1;
 	self.pan = 0.0f;
+	self.volume = 0.5f;
 	data->offset = max_count;
 	data->max_count = max_count;
 
@@ -72,7 +77,7 @@ void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct imp
 {
     (void) memory;
     
-	add_sine(self, 128, 1);
-	add_sine(self, 64, 2);
-	add_sine(self, 256, 0);
+	add_sine(self, 64, 0);
+	//add_sine(self, 64, 2);
+	//add_sine(self, 256, 0);
 }

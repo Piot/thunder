@@ -1,0 +1,1 @@
+clang ../src/lib/*.c ../deps/imprint/*.c ../deps/tiny-libc/*.c ../src/platform/webassembly/*.c  ../deps/breathe/sdl_main.c ../src/example/app.c  -I ../src/include/ -I ../deps/ -lm -lSDL2 -D TORNADO_OS_LINUX -D CONFIGURATION_DEBUG

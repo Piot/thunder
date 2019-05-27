@@ -84,7 +84,7 @@ void thunder_audio_buffer_read(thunder_audio_buffer* self, thunder_sample_output
 
 void thunder_audio_buffer_init(thunder_audio_buffer* self, imprint_memory* memory, int atom_size)
 {
-	self->buffer_count = 6;
+	self->buffer_count = 9;
 	self->atom_size = atom_size;
 	self->read_index = -1;
 	self->write_index = 0;

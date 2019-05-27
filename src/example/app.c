@@ -26,49 +26,37 @@ SOFTWARE.
 #include <burst/burst_file_loader.h>
 #include <thunder/sound_loader.h>
 #include <thunder/sound_module.h>
-#include <tyran/tyran_log.h>
-#include <tyran/tyran_memory.h>
+#include <clog/clog.h>
+#include <imprint/memory.h>
 
-tyran_memory global_mem;
-thunder_sound_module module;
-thunder_sound_module_wave true_wave;
-burst_file_loader loader;
+typedef struct example_app {
+	thunder_sound_module module;
+	imprint_memory global_mem;
+} example_app;
 
-void ogg_file_loaded(void* user_data, const uint8_t* octets, int32_t result)
+
+static example_app __app;
+
+void* g_breathe_init(int width, int height)
 {
-	thunder_sound_module_wave* second_wave = &module.waves[1];
-	thunder_sound_wave* wave = &second_wave->wave;
+	example_app *self = &__app;
 
-	thunder_sound_loader_load(&global_mem, octets, result, wave);
-	thunder_sound_module_play_sound(&module, 1, 1, 1.0f, 100000, TYRAN_TRUE);
+	imprint_memory_init(&self->global_mem, 64 * 1024 * 1024, "just an self");
+	thunder_sound_module_init(&self->module, &self->global_mem);
+
+	thunder_sound_module_debug_sine_wave(&self->module, &self->global_mem);
+
+	return self;
 }
 
-void load_sound()
+int g_breathe_draw(void *_app)
 {
-	burst_file_loader_init(&loader);
-	burst_file_loader_load(&loader, "test.ogg", 0, ogg_file_loaded);
+	example_app *self = _app;
+	thunder_sound_module_update(&self->module);
+	return 0;
 }
 
-void g_breath_init(int width, int height)
+void g_breathe_close(void *_app)
 {
-	tyran_memory_init(&global_mem, 64 * 1024 * 1024, "just an app");
-	thunder_sound_module_init(&module, &global_mem);
-	thunder_sound_module_wave* module_wave = &module.waves[0];
 
-#define MAX_COUNT (88)
-	thunder_sample test[MAX_COUNT];
-	for (int i = 0; i < MAX_COUNT; ++i) {
-		tyran_number f = sin((6.28f * (tyran_number) i) / (tyran_number) MAX_COUNT);
-		test[i] = f * 32767;
-	}
-	thunder_sound_wave_init(&module_wave->wave, &global_mem, test, MAX_COUNT, 1);
-	// thunder_sound_module_play_sound(&module, 0, 0, 1.0f, 100000, TYRAN_TRUE);
-	load_sound();
-}
-
-void g_breath_draw()
-{
-	thunder_sound_module_update(&module);
-
-	burst_file_loader_poll(&loader);
 }
