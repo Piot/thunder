@@ -77,7 +77,7 @@ void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct imp
 {
     (void) memory;
     
-	add_sine(self, 64, 0);
-	//add_sine(self, 64, 2);
-	//add_sine(self, 256, 0);
+	add_sine(self, 64, 4);
+	add_sine(self, 128, 2);
+	add_sine(self, 256, 0);
 }

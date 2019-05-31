@@ -32,7 +32,7 @@ SOFTWARE.
 
 void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
 {
-	thunder_sdl_sound_driver_init(&self->sdl_driver, buffer, TYRAN_TRUE);
+	thunder_sdl_sound_driver_init(&self->sdl_driver, buffer, TYRAN_FALSE);
 }
 
 void thunder_sound_driver_free(thunder_sound_driver* self)

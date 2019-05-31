@@ -30,8 +30,10 @@ SOFTWARE.
 
 #if defined TORNADO_OS_IOS || defined TORNADO_OS_MAC_OS_X
 #include <thunder/platform/ios/sound_driver.h>
-#elif defined TORNADO_OS_WEBASSEMBLY  || defined TORNADO_OS_LINUX
+#elif defined TORNADO_OS_WEBASSEMBLY  
 #include <thunder/platform/webassembly/sound_driver.h>
+#elif defined TORNADO_OS_LINUX
+#include <thunder/platform/sdl/sound_driver.h>
 #else
 #error "Unknown platform"
 #endif

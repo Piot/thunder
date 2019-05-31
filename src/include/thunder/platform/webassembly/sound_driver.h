@@ -28,13 +28,10 @@ SOFTWARE.
 #ifndef thunder_sound_driver_webassembly_h
 #define thunder_sound_driver_webassembly_h
 
-struct thunder_audio_buffer;
-
-#include <SDL2/SDL.h>
+#include "../sdl/sdl_sound_driver.h"
 
 typedef struct thunder_sound_driver {
-	struct thunder_audio_buffer* buffer;
-	SDL_AudioDeviceID device_handle;
+	thunder_sdl_sound_driver sdl_driver;
 } thunder_sound_driver;
 
 #endif

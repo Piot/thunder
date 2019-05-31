@@ -23,19 +23,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
-#include <clog/clog.h>
-#include <thunder/platform/webassembly/sound_driver.h>
-#include <thunder/sound_buffer.h>
-#include <tyran/tyran_types.h>
+#if defined TORNADO_OS_WEBASSEMBLY || defined TORNADO_OS_MAC_OS_X || defined TORNADO_OS_LINUX
 
+#ifndef thunder_sdl_sound_driver_h
+#define thunder_sdl_sound_driver_h
+
+struct thunder_audio_buffer;
+#include <tyran/tyran_types.h>
 #include <SDL2/SDL.h>
 
-void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
-{
-	thunder_sdl_sound_driver_init(&self->sdl_driver, buffer, TYRAN_TRUE);
-}
+typedef struct thunder_sdl_sound_driver {
+	struct thunder_audio_buffer* buffer;
+	SDL_AudioDeviceID device_handle;
+} thunder_sdl_sound_driver;
 
-void thunder_sound_driver_free(thunder_sound_driver* self)
-{
-    thunder_sdl_sound_driver_free(&self->sdl_driver);
-}
+void thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, struct thunder_audio_buffer* buffer, tyran_boolean use_floats);
+void thunder_sdl_sound_driver_free(thunder_sdl_sound_driver* self);
+
+#endif
+
+#endif
