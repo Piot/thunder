@@ -1,0 +1,24 @@
+depsversion = "0.0.0"
+
+name = "piot/thunder"
+version = "0.0.0"
+
+[[dependencies]]
+name = 'piot/tiny-libc'
+version = "*"
+
+[[dependencies]]
+name = 'piot/clog'
+version = "*"
+
+[[dependencies]]
+name = 'piot/tyran'
+version = "*"
+
+[[development]]
+name = 'piot/breathe'
+version = "*"
+
+[[development]]
+name = 'piot/burst'
+version = "*"
