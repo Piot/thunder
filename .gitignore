@@ -1,5 +1,5 @@
 target/
 external/
 .vscode/
-deps/
+deps*/
 

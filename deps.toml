@@ -15,6 +15,12 @@ version = "*"
 name = 'piot/tyran'
 version = "*"
 
+[[dependencies]]
+name = 'piot/imprint'
+version = "*"
+
+
+
 [[development]]
 name = 'piot/breathe'
 version = "*"
