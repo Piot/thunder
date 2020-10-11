@@ -27,6 +27,7 @@ SOFTWARE.
 #include <thunder/sound_module.h>
 #include <thunder/sound_types.h>
 #include <tiny-libc/tiny_libc.h>
+#include <basal/basal_math.h>
 #include <stdio.h>
 
 #include <math.h>

@@ -50,6 +50,8 @@ void thunder_sound_module_update(thunder_sound_module* _self)
 	if (percentage < 0.2f) {
 		thunder_audio_compositor_update(&self->compositor);
 	}
+
+	thunder_sound_driver_update(&self->driver);
 }
 
 void thunder_sound_module_add_node(thunder_sound_module* self, thunder_audio_node node)

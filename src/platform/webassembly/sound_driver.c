@@ -29,6 +29,7 @@ SOFTWARE.
 #include <tyran/tyran_types.h>
 
 #include <SDL2/SDL.h>
+#if 0
 
 void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
 {
@@ -39,3 +40,5 @@ void thunder_sound_driver_free(thunder_sound_driver* self)
 {
     thunder_sdl_sound_driver_free(&self->sdl_driver);
 }
+
+#endif
