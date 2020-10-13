@@ -35,6 +35,8 @@ SOFTWARE.
 typedef struct debug_sine {
 	uint64_t time;
 	uint64_t timeFactor;
+	uint64_t amplitude;
+	uint64_t amplitudeFactor;
 	float offset;
 } debug_sine;
 
@@ -43,15 +45,20 @@ static void generate_sine(void* _self, thunder_sample* output, int sample_count)
 	//printf("sine:%d\n", sample_count);
 	debug_sine* self = _self;
 	for (int i = 0; i < sample_count; ++i) {
-		tyran_number angle = (self->time % 62832) / 10000.0f;
+		tyran_number angle = (self->time % 628318) / 100000.0f;
 		tyran_number f = sinf(angle);
+		tyran_number amplitude = self->amplitude / 1000000.0f;
 
-		output[i] = (f * 32767.0f);
+		output[i] = (f  * 32767.0f * amplitude);
 		self->time += self->timeFactor;
+		self->amplitude += self->amplitudeFactor;
+		if (self->amplitude > 1000000) {
+			self->amplitude = 1000000;
+		}
 	}
 }
 
-thunder_audio_node make_sine_node(uint64_t offset, uint64_t factor)
+thunder_audio_node make_sine_node(uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
 {
 	thunder_audio_node self;
 	debug_sine* data = tc_malloc_type(debug_sine);
@@ -62,25 +69,36 @@ thunder_audio_node make_sine_node(uint64_t offset, uint64_t factor)
 	self.channel_count = 1;
 	self.pan = 0.0f;
 	self.volume = 0.5f;
+
 	data->offset = offset;
 	data->timeFactor = factor;
+	data->amplitude = 10;
+	data->amplitudeFactor = amplitudeFactor;
+	data->time = offset;
+
 
 	return self;
 }
 
-void add_sine(thunder_sound_module* self, uint64_t offset, uint64_t factor)
+void add_sine(thunder_sound_module* self, uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
 {
     (void)offset;
     
-	thunder_audio_node node = make_sine_node(offset, factor);
+	thunder_audio_node node = make_sine_node(offset, factor, amplitudeFactor);
 	thunder_sound_module_add_node(self, node);
 }
 
 void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct imprint_memory* memory)
 {
     (void) memory;
-    
-	add_sine(self, 0, 400);
-	add_sine(self, 0, 1600);
-	add_sine(self, 0, 800);
+
+	const uint64_t base = 4300;
+
+	const uint64_t first = (1.4983 * base);
+	const uint64_t second = (1.2599 * base);
+	const uint64_t third = (2.0 * base);
+	add_sine(self, 0, base, 30);
+	add_sine(self, 1120, first, 20);
+	add_sine(self, 530, second, 4);
+	add_sine(self, 130, third, 6);
 }
