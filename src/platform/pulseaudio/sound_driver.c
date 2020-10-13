@@ -1,4 +1,5 @@
 #include <thunder/sound_driver.h>
+#include <thunder/sound_buffer.h>
 
 void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
 {

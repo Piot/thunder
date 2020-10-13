@@ -28,13 +28,16 @@ SOFTWARE.
 #define thunder_pulseaudio_sound_driver_impl_h
 
 struct thunder_audio_buffer;
-struct pa_simple;
+struct pa_stream;
+struct pa_context;
 
 #include <tyran/tyran_types.h>
 
 typedef struct thunder_pulseaudio_sound_driver {
 	struct thunder_audio_buffer* buffer;
-	struct pa_simple* simple;
+	struct pa_stream *stream;
+	struct pa_context* context;
+	struct pa_mainloop* mainloop;
 } thunder_pulseaudio_sound_driver;
 
 void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, struct thunder_audio_buffer* buffer, tyran_boolean use_floats);
