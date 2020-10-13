@@ -47,10 +47,10 @@ add_executable(thunder_example
         ${lib_src}
         ../deps/burst/src/platform/posix/burst_file_loader_posix.c
         example/app.c
-        platform/pulseaudio/pulseaudio_sound_driver.c
-        platform/pulseaudio/sound_driver.c
-#        platform/sdl/sound_driver.c
- #       platform/sdl_common/sdl_sound_driver.c
+#       platform/pulseaudio/pulseaudio_sound_driver.c
+#       platform/pulseaudio/sound_driver.c
+        platform/sdl/sound_driver.c
+        platform/sdl_common/sdl_sound_driver.c
         )
 
 find_package (Vulkan)
@@ -60,6 +60,12 @@ if (Vulkan_FOUND)
 endif (Vulkan_FOUND)
 find_package(glfw3 3.3 REQUIRED)
 
+# SDL2
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+target_link_libraries(thunder_example ${SDL2_LIBRARIES})
+
+# PulseAudio
 #find_package (PulseAudio REQUIRED)
 #include_directories(${PulseAudio_INCLUDE_DIRS})
 #target_link_libraries (thunder_example ${PulseAudio_LIBRARIES})

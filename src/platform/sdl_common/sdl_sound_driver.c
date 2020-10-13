@@ -89,6 +89,7 @@ static void audio_format(SDL_AudioSpec* want, SDL_AudioFormat format, SDL_AudioC
 
 void thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, thunder_audio_buffer* buffer, tyran_boolean use_floats)
 {
+	SDL_InitSubSystem(SDL_INIT_AUDIO);
 	self->buffer = buffer;
     SDL_AudioFormat want_format = use_floats ? AUDIO_F32 : AUDIO_S16SYS;
     SDL_AudioCallback calback = use_floats ?  fill_f32_buffer_callback : fill_s16_buffer_callback;
@@ -97,7 +98,7 @@ void thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, thunder_audio
 	want.userdata = self;
 	SDL_AudioDeviceID result = SDL_OpenAudioDevice(0, 0, &want, &have, 0);
 	if (result <= 0) {
-		CLOG_WARN("FAILED TO OPEN AUDIO!");
+		CLOG_WARN("sdl2: failed to open audio device '%s'", SDL_GetError());
 		return;
 	}
 	self->device_handle = result;

@@ -23,7 +23,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
-#if 0
 #include <clog/clog.h>
 #include <thunder/platform/webassembly/sound_driver.h>
 #include <thunder/sound_buffer.h>
@@ -40,5 +39,3 @@ void thunder_sound_driver_free(thunder_sound_driver* self)
 {
     thunder_sdl_sound_driver_free(&self->sdl_driver);
 }
-
-#endif
