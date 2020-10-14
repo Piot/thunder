@@ -69,10 +69,11 @@ target_link_libraries(thunder_example ${SDL2_LIBRARIES})
 #find_package (PulseAudio REQUIRED)
 #include_directories(${PulseAudio_INCLUDE_DIRS})
 #target_link_libraries (thunder_example ${PulseAudio_LIBRARIES})
+#target_link_libraries(thunder_example pulse-simple)
+#target_link_libraries(thunder_example pulse)
+
 
 target_link_libraries(thunder_example m)
 target_link_libraries(thunder_example glfw)
-target_link_libraries(thunder_example pulse-simple)
-target_link_libraries(thunder_example pulse)
 target_link_libraries(thunder_example -fsanitize=address)
 
