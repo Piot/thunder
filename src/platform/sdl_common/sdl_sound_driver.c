@@ -1,7 +1,8 @@
+#include <thunder/platform/sdl/sound_driver.h>
+
 #include <SDL2/SDL.h>
 #include <tyran/tyran_types.h>
 #include <clog/clog.h>
-#include <thunder/platform/webassembly/sound_driver.h>
 #include <thunder/sound_buffer.h>
 #include <tyran/tyran_types.h>
 
