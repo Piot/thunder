@@ -1,4 +1,10 @@
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+
 external/
 *.o
 .idea/
 
+thunder_example
