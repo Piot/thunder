@@ -34,22 +34,22 @@ struct imprint_memory;
 struct thunder_audio_node_player;
 
 typedef struct thunder_sound_module_sound {
-	tyran_boolean is_used;
-	tyran_boolean should_play;
-	tyran_boolean waiting_for_play;
-	float time;
-	tyran_number volume;
-	float pan;
-	int loop;
-	struct thunder_sound_module_sound* sync_with_sound;
-	struct thunder_audio_compositor_node* node;
+    tyran_boolean is_used;
+    tyran_boolean should_play;
+    tyran_boolean waiting_for_play;
+    float time;
+    tyran_number volume;
+    float pan;
+    int loop;
+    struct thunder_sound_module_sound* sync_with_sound;
+    struct thunder_audio_compositor_node* node;
 } thunder_sound_module_sound;
 
 typedef struct thunder_sound_module {
-	thunder_sound_driver driver;
-	struct imprint_memory* memory;
-	thunder_audio_compositor compositor;
-	tyran_boolean initialized;
+    thunder_sound_driver driver;
+    struct imprint_memory* memory;
+    thunder_audio_compositor compositor;
+    tyran_boolean initialized;
 } thunder_sound_module;
 
 void thunder_sound_module_init(thunder_sound_module* _self, struct imprint_memory* memory);

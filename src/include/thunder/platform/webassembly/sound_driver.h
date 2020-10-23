@@ -31,7 +31,7 @@ SOFTWARE.
 #include "../sdl/sdl_sound_driver.h"
 
 typedef struct thunder_sound_driver {
-	thunder_sdl_sound_driver sdl_driver;
+    thunder_sdl_sound_driver sdl_driver;
 } thunder_sound_driver;
 
 #endif

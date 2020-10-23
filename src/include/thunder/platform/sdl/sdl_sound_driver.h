@@ -29,12 +29,12 @@ SOFTWARE.
 #define thunder_sdl_sound_driver_h
 
 struct thunder_audio_buffer;
-#include <tyran/tyran_types.h>
 #include <SDL2/SDL.h>
+#include <tyran/tyran_types.h>
 
 typedef struct thunder_sdl_sound_driver {
-	struct thunder_audio_buffer* buffer;
-	SDL_AudioDeviceID device_handle;
+    struct thunder_audio_buffer* buffer;
+    SDL_AudioDeviceID device_handle;
 } thunder_sdl_sound_driver;
 
 void thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, struct thunder_audio_buffer* buffer, tyran_boolean use_floats);

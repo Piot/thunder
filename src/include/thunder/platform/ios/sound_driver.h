@@ -33,8 +33,8 @@ SOFTWARE.
 struct thunder_audio_buffer;
 
 typedef struct thunder_sound_driver {
-	AudioQueueRef zQueue;
-	struct thunder_audio_buffer* buffer;
+    AudioQueueRef zQueue;
+    struct thunder_audio_buffer* buffer;
 } thunder_sound_driver;
 
 #endif
