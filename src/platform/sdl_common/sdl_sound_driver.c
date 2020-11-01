@@ -81,7 +81,7 @@ static void start_playback(thunder_sdl_sound_driver* self)
 static void audio_format(SDL_AudioSpec* want, SDL_AudioFormat format, SDL_AudioCallback callback)
 {
 	SDL_memset(want, 0, sizeof(*want));
-	want->freq = 44100;
+	want->freq = 48000;
 	want->format = format;
 	want->channels = 2;
 	want->samples = 2048;
