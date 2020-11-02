@@ -37,4 +37,10 @@ typedef struct ThunderAudioCircularBuffer {
 	int size;
 } ThunderAudioCircularBuffer;
 
+void thunderAudioCircularBufferInit(ThunderAudioCircularBuffer* self, size_t maxSize);
+void thunderAudioCircularBufferDestroy(ThunderAudioCircularBuffer* self);
+int thunderAudioCircularBufferReadAvailable(const ThunderAudioCircularBuffer* self);
+void thunderAudioCircularBufferWrite(ThunderAudioCircularBuffer* self, const thunder_sample* data, size_t sampleCountInTarget);
+void thunderAudioCircularBufferRead(ThunderAudioCircularBuffer* self, thunder_sample* output, size_t requiredCount);
+
 #endif
