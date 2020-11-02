@@ -30,7 +30,7 @@ SOFTWARE.
 #include <thunder/sound_compositor.h>
 #include <thunder/sound_module.h>
 
-static const int THUNDER_ATOM_SAMPLE_COUNT = 2 * 1024;
+static const int THUNDER_ATOM_SAMPLE_COUNT = 8 * 1024;
 
 static void mix_down_using_volume(thunder_mix_sample* source, int size, float mix_down_volume, thunder_sample* target)
 {

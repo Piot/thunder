@@ -84,7 +84,7 @@ static void audio_format(SDL_AudioSpec* want, SDL_AudioFormat format, SDL_AudioC
 	want->freq = 48000;
 	want->format = format;
 	want->channels = 2;
-	want->samples = 2048;
+	want->samples = 8192;
 	want->callback = callback;
 }
 
