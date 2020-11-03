@@ -28,6 +28,8 @@ SOFTWARE.
 #include <thunder/sound_buffer.h>
 #include <tyran/tyran_types.h>
 
+#include <stdint.h>
+
 const int audio_buffer_size = 4 * 1024;
 
 static void fill_buffer_callback(void* _self, AudioQueueRef queue, AudioQueueBufferRef buffer)
@@ -39,7 +41,7 @@ static void fill_buffer_callback(void* _self, AudioQueueRef queue, AudioQueueBuf
 	if ((buffer->mAudioDataBytesCapacity % 4) != 0) {
 		CLOG_WARN("ERROR!!!!!");
 	}
-	uint sample_count = buffer->mAudioDataByteSize / sizeof(thunder_sample_output_s16);
+	UInt32 sample_count = buffer->mAudioDataByteSize / sizeof(thunder_sample_output_s16);
 	thunder_sample_output_s16* target = (thunder_sample_output_s16*) buffer->mAudioData;
 	thunder_audio_buffer_read(sound_buffer, target, sample_count);
 

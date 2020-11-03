@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
-#if defined TORNADO_OS_WEBASSEMBLY || defined TORNADO_OS_MAC_OS_X || defined TORNADO_OS_LINUX
+#if defined TORNADO_OS_WEBASSEMBLY || defined TORNADO_OS_MACOS || defined TORNADO_OS_LINUX
 
 #ifndef thunder_sound_driver_webassembly_h
 #define thunder_sound_driver_webassembly_h

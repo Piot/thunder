@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
-#if defined TORNADO_OS_IOS || defined TORNADO_OS_MAC_OS_X
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_MACOS
 
 #ifndef thunder_sound_driver_ios_h
 #define thunder_sound_driver_ios_h

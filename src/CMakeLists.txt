@@ -2,7 +2,16 @@ cmake_minimum_required(VERSION 3.17.3)
 project(thunder_example C)
 
 set(CMAKE_C_STANDARD 11)
-add_compile_definitions(_POSIX_C_SOURCE=200112L TORNADO_OS_LINUX CONFIGURATION_DEBUG TYRAN_CONFIGURATION_DEBUG)
+add_compile_definitions(_POSIX_C_SOURCE=200112L CONFIGURATION_DEBUG TYRAN_CONFIGURATION_DEBUG)
+
+if (APPLE)
+        add_compile_definitions(TORNADO_OS_MACOS)
+        set(OS_MACOS 1)
+elseif (UNIX)
+        add_compile_definitions(TORNADO_OS_LINUX)
+        set(OS_LINUX 1)
+endif()
+
 
 include_directories(include)
 
@@ -37,9 +46,19 @@ list(FILTER deps_src EXCLUDE REGEX ".*src/platform/webassembly/.*" )
 list(FILTER deps_src EXCLUDE REGEX ".*src/platform/sdl/.*" )
 
 
+
+
+
 file(GLOB_RECURSE lib_src FOLLOW_SYMLINKS
         "lib/*.c"
         )
+
+if (OS_MACOS)
+file(GLOB_RECURSE ios_src FOLLOW_SYMLINKS
+        "platform/ios/*.c"
+        )
+     list (APPEND lib_src ${ios_src})
+endif()
 
 
 add_executable(thunder_example
@@ -49,8 +68,8 @@ add_executable(thunder_example
         example/app.c
 #       platform/pulseaudio/pulseaudio_sound_driver.c
 #       platform/pulseaudio/sound_driver.c
-        platform/sdl/sound_driver.c
-        platform/sdl_common/sdl_sound_driver.c
+#        platform/sdl/sound_driver.c
+#        platform/sdl_common/sdl_sound_driver.c
         )
 
 find_package (Vulkan)
@@ -60,10 +79,15 @@ if (Vulkan_FOUND)
 endif (Vulkan_FOUND)
 find_package(glfw3 3.3 REQUIRED)
 
-# SDL2
-find_package(SDL2 REQUIRED)
-include_directories(${SDL2_INCLUDE_DIRS})
-target_link_libraries(thunder_example ${SDL2_LIBRARIES})
+if (OS_MACOS)
+   find_library(COREAUDIO_LIBRARY CoreAudio)
+   find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+   find_library(COREAUDIO_TOOLBOX_LIBRARY AudioToolbox)
+   message("hello ${COREAUDIO_TOOLBOX_LIBRARY}\n ${COREAUDIO_LIBRARY} ${COREFOUNDATION_LIBRARY}\n")
+   target_link_libraries(thunder_example ${COREAUDIO_LIBRARY})
+   target_link_libraries(thunder_example ${COREFOUNDATION_LIBRARY})
+   target_link_libraries(thunder_example ${COREAUDIO_TOOLBOX_LIBRARY})
+endif(OS_MACOS)
 
 # PulseAudio
 #find_package (PulseAudio REQUIRED)
