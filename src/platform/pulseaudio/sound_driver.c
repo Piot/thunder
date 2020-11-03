@@ -1,5 +1,7 @@
-#include <thunder/sound_driver.h>
+#include <stdio.h>
+#include <thunder/platform/pulseaudio/pulseaudio_sound_driver.h>
 #include <thunder/sound_buffer.h>
+#include <thunder/sound_driver.h>
 
 void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
 {

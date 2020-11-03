@@ -58,6 +58,11 @@ file(GLOB_RECURSE ios_src FOLLOW_SYMLINKS
         "platform/ios/*.c"
         )
      list (APPEND lib_src ${ios_src})
+elseif (OS_LINUX)
+file(GLOB_RECURSE linux_src FOLLOW_SYMLINKS
+        "platform/pulseaudio/*.c"
+        )
+     list (APPEND lib_src ${linux_src})
 endif()
 
 
@@ -66,10 +71,6 @@ add_executable(thunder_example
         ${lib_src}
         ../deps/burst/src/platform/posix/burst_file_loader_posix.c
         example/app.c
-#       platform/pulseaudio/pulseaudio_sound_driver.c
-#       platform/pulseaudio/sound_driver.c
-#        platform/sdl/sound_driver.c
-#        platform/sdl_common/sdl_sound_driver.c
         )
 
 find_package (Vulkan)
@@ -89,13 +90,15 @@ if (OS_MACOS)
    target_link_libraries(thunder_example ${COREAUDIO_TOOLBOX_LIBRARY})
 endif(OS_MACOS)
 
-# PulseAudio
-#find_package (PulseAudio REQUIRED)
-#include_directories(${PulseAudio_INCLUDE_DIRS})
-#target_link_libraries (thunder_example ${PulseAudio_LIBRARIES})
-#target_link_libraries(thunder_example pulse-simple)
-#target_link_libraries(thunder_example pulse)
-
+if (OS_LINUX)
+        # PulseAudio
+        message("Add pulse audio!")
+        find_package (PulseAudio REQUIRED)
+        include_directories(${PulseAudio_INCLUDE_DIRS})
+        target_link_libraries (thunder_example ${PulseAudio_LIBRARIES})
+        target_link_libraries(thunder_example pulse-simple)
+        target_link_libraries(thunder_example pulse)
+endif(OS_LINUX)
 
 target_link_libraries(thunder_example m)
 target_link_libraries(thunder_example glfw)

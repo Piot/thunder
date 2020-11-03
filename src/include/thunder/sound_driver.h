@@ -32,7 +32,9 @@ SOFTWARE.
 #include <thunder/platform/ios/sound_driver.h>
 #elif defined TORNADO_OS_WEBASSEMBLY
 #include <thunder/platform/webassembly/sound_driver.h>
-#elif defined TORNADO_OS_LINUX || defined TORNADO_OS_MACOS
+#elif defined TORNADO_OS_LINUX
+#include <thunder/platform/pulseaudio/sound_driver.h>
+#elif
 #include <thunder/platform/sdl/sound_driver.h>
 #else
 #error "Unknown platform"
@@ -42,5 +44,6 @@ struct thunder_sound_buffer;
 
 void thunder_sound_driver_init(thunder_sound_driver* self, struct thunder_audio_buffer* buffer);
 void thunder_sound_driver_free(thunder_sound_driver* self);
+void thunder_sound_driver_update(thunder_sound_driver* self);
 
 #endif

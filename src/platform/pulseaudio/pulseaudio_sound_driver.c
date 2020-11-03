@@ -5,8 +5,8 @@
 #include <tyran/tyran_types.h>
 
 #include <pulse/error.h>
-#include <pulse/sample.h>
 #include <pulse/pulseaudio.h>
+#include <pulse/sample.h>
 
 thunder_sample temp_buf[16 * 1024];
 
@@ -77,12 +77,12 @@ static void startPlayback(thunder_pulseaudio_sound_driver* self)
 
 	/*
 	 *                 memset(&buffer_attr, 0, sizeof(buffer_attr));
-                buffer_attr.tlength = (uint32_t) latency;
-                buffer_attr.minreq = (uint32_t) process_time;
-                buffer_attr.maxlength = (uint32_t) -1;
-                buffer_attr.prebuf = (uint32_t) -1;
-                buffer_attr.fragsize = (uint32_t) latency;
-                flags |= PA_STREAM_ADJUST_LATENCY;
+				buffer_attr.tlength = (uint32_t) latency;
+				buffer_attr.minreq = (uint32_t) process_time;
+				buffer_attr.maxlength = (uint32_t) -1;
+				buffer_attr.prebuf = (uint32_t) -1;
+				buffer_attr.fragsize = (uint32_t) latency;
+				flags |= PA_STREAM_ADJUST_LATENCY;
 	 */
 	pa_buffer_attr* defaultAttribute = 0;
 	const pa_cvolume* defaultVolume = 0;
@@ -95,23 +95,23 @@ static void startPlayback(thunder_pulseaudio_sound_driver* self)
 	}
 }
 
-static void writeCallback(pa_stream *stream, size_t length, void *userdata) {
+static void writeCallback(pa_stream* stream, size_t octetLength, void* userdata)
+{
 	thunder_pulseaudio_sound_driver* self = (thunder_pulseaudio_sound_driver*) userdata;
 
+	int combinedSampleOctets = sizeof(thunder_sample_output_s16);
+
+	int requiredSampleCount = octetLength / combinedSampleOctets;
+
 	const size_t bufferLength = 44100;
-	uint8_t buffer[bufferLength];
+	thunder_sample_output_s16 buffer[bufferLength];
 
-	size_t l = length;
-	if (l > bufferLength) {
-		l = bufferLength;
-	}
+	int convertedOctetCount = requiredSampleCount * combinedSampleOctets;
 
-	int sampleCount = l/(sizeof(thunder_sample_output_s16)*2);
+	thunder_audio_buffer_read(self->buffer, buffer, requiredSampleCount);
 
-	thunder_audio_buffer_read(self->buffer, buffer, sampleCount);
-
-	if (pa_stream_write(stream, (uint8_t*) buffer + 0, l, NULL, 0, PA_SEEK_RELATIVE) < 0) {
-		CLOG_ERROR( "pa_stream_write() failed: %s\n", pa_strerror(pa_context_errno(self->context)));
+	if (pa_stream_write(stream, (uint8_t*) buffer, convertedOctetCount, NULL, 0, PA_SEEK_RELATIVE) < 0) {
+		CLOG_ERROR("pa_stream_write() failed: %s\n", pa_strerror(pa_context_errno(self->context)));
 		return;
 	}
 }
@@ -132,20 +132,18 @@ static void contextReadyCallback(thunder_pulseaudio_sound_driver* self)
 
 	sampleSpec.format = PA_SAMPLE_S16LE;
 	sampleSpec.channels = 2;
-	sampleSpec.rate = 44100;
-
+	sampleSpec.rate = 48000;
 
 	if (!(stream = pa_stream_new(self->context, streamName, &sampleSpec, defaultChannelMap))) {
 		CLOG_ERROR("pa_stream_new() failed: %s", pa_strerror(pa_context_errno(self->context)));
 	}
-
 
 	self->stream = stream;
 	pa_stream_set_write_callback(self->stream, writeCallback, self);
 	startPlayback(self);
 }
 
-static void stateCallback(pa_context *c, void *userdata)
+static void stateCallback(pa_context* c, void* userdata)
 {
 	thunder_pulseaudio_sound_driver* self = (thunder_pulseaudio_sound_driver*) userdata;
 
@@ -160,10 +158,7 @@ static void stateCallback(pa_context *c, void *userdata)
 			CLOG_INFO("state: %d", state);
 			break;
 	}
-
 }
-
-
 
 void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, thunder_audio_buffer* buffer, tyran_boolean use_floats)
 {
@@ -172,9 +167,9 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
 	pa_sample_spec ss;
 	ss.format = PA_SAMPLE_S16BE;
 	ss.channels = 2;
-	ss.rate = 44100;
+	ss.rate = 48000;
 
-	pa_stream *stream = 0;
+	pa_stream* stream = 0;
 
 	pa_mainloop* mainloop;
 
@@ -189,7 +184,7 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
 
 	const char* clientName = "client";
 
-	pa_context *context;
+	pa_context* context;
 	if (!(context = pa_context_new(mainloopApi, clientName))) {
 		CLOG_ERROR("mainloop")
 	}
@@ -205,18 +200,19 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
 	}
 
 	/*
-	int ret;
-	if (pa_mainloop_run(mainloop, &ret) < 0) {
-		CLOG_INFO("pa_mainloop_run() failed.");
-	}
-	 */
-
+		int ret;
+		if (pa_mainloop_run(mainloop, &ret) < 0) {
+			CLOG_INFO("pa_mainloop_run() failed.");
+		}
+		*/
 }
 
 void thunder_pulseaudio_sound_driver_update(thunder_pulseaudio_sound_driver* self)
 {
 	int returnValue;
-	pa_mainloop_iterate(self->mainloop, 1, &returnValue);
+	for (int i = 0; i < 2; i++) {
+		pa_mainloop_iterate(self->mainloop, 1, &returnValue);
+	}
 }
 
 void thunder_pulseaudio_sound_driver_free(thunder_pulseaudio_sound_driver* self)
