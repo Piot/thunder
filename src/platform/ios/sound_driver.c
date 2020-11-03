@@ -30,7 +30,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
-const int audio_buffer_size = 4 * 1024;
+const int audio_buffer_size = 2 * 1024;
 
 static void fill_buffer_callback(void* _self, AudioQueueRef queue, AudioQueueBufferRef buffer)
 {
@@ -88,7 +88,7 @@ static void open_output(thunder_sound_driver* self, float sample_rate)
 void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
 {
 	self->buffer = buffer;
-	open_output(self, 44100.0f);
+	open_output(self, 48000.0f);
 	create_and_fill_buffers(self);
 	start_playback(self);
 }
