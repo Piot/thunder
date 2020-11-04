@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include <thunder/sound_types.h>
 
-#if defined TORNADO_OS_IOS
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_MACOS
 #include <thunder/platform/ios/sound_driver.h>
 #elif defined TORNADO_OS_WEBASSEMBLY
 #include <thunder/platform/webassembly/sound_driver.h>
