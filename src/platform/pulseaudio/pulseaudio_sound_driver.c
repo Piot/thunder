@@ -8,69 +8,6 @@
 #include <pulse/pulseaudio.h>
 #include <pulse/sample.h>
 
-thunder_sample temp_buf[16 * 1024];
-
-/*
-static void fill_f32_buffer_callback(void* _self, uint8_t* target, int octet_length)
-{
-	thunder_pulseaudio_sound_driver* self = _self;
-
-	thunder_audio_buffer* sound_buffer = self->buffer;
-
-	if ((octet_length % 4) != 0) {
-		CLOG_ERROR("ERROR!!!!! Wrong octet_length");
-	}
-	size_t sample_count_to_fill = octet_length / sizeof(float);
-	if (sample_count_to_fill > 16 * 1024) {
-		CLOG_ERROR("ERROR!!!!! sample_count too big");
-		return;
-	}
-	if ((sample_count_to_fill % 8) != 0) {
-		CLOG_ERROR("DIVISON ERR");
-		return;
-	}
-
-	float* float_target = (float*) target;
-	thunder_audio_buffer_read(sound_buffer, temp_buf, sample_count_to_fill);
-	size_t spin = sample_count_to_fill / 8;
-	thunder_sample* source = temp_buf;
-	const float divisor = 33000.0f;
-	for (size_t i = 0; i < spin; ++i) {
-		*float_target++ = *source++ / divisor;
-		*float_target++ = *source++ / divisor;
-		*float_target++ = *source++ / divisor;
-		*float_target++ = *source++ / divisor;
-		*float_target++ = *source++ / divisor;
-		*float_target++ = *source++ / divisor;
-		*float_target++ = *source++ / divisor;
-		*float_target++ = *source++ / divisor;
-	}
-}
- */
-
-static void fill_s16_buffer_callback(void* _self, uint8_t* target, int octet_length)
-{
-	thunder_pulseaudio_sound_driver* self = _self;
-
-	thunder_audio_buffer* sound_buffer = self->buffer;
-
-	if ((octet_length % 4) != 0) {
-		CLOG_ERROR("ERROR!!!!! Wrong octet_length");
-	}
-	size_t sample_count_to_fill = octet_length / sizeof(s16t);
-	if (sample_count_to_fill > 16 * 1024) {
-		CLOG_ERROR("ERROR!!!!! sample_count too big");
-		return;
-	}
-	if ((sample_count_to_fill % 8) != 0) {
-		CLOG_ERROR("DIVISON ERR");
-		return;
-	}
-
-	thunder_sample_output_s16* int_target = (thunder_sample_output_s16*) target;
-	thunder_audio_buffer_read(sound_buffer, int_target, sample_count_to_fill);
-}
-
 static void startPlayback(thunder_pulseaudio_sound_driver* self)
 {
 	const char* defaultDevice = 0;
@@ -171,16 +108,16 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
 
 	pa_stream* stream = 0;
 
-	pa_mainloop* mainloop;
+	pa_threaded_mainloop* mainloop;
 
-	if (!(mainloop = pa_mainloop_new())) {
+	if (!(mainloop = pa_threaded_mainloop_new())) {
 		CLOG_ERROR("mainloop")
 		return;
 	}
 	self->mainloop = mainloop;
 
 	pa_mainloop_api* mainloopApi;
-	mainloopApi = pa_mainloop_get_api(mainloop);
+	mainloopApi = pa_threaded_mainloop_get_api(mainloop);
 
 	const char* clientName = "client";
 
@@ -205,14 +142,8 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
 			CLOG_INFO("pa_mainloop_run() failed.");
 		}
 		*/
-}
 
-void thunder_pulseaudio_sound_driver_update(thunder_pulseaudio_sound_driver* self)
-{
-	int returnValue;
-	for (int i = 0; i < 2; i++) {
-		pa_mainloop_iterate(self->mainloop, 1, &returnValue);
-	}
+	pa_threaded_mainloop_start(mainloop);
 }
 
 void thunder_pulseaudio_sound_driver_free(thunder_pulseaudio_sound_driver* self)

@@ -34,14 +34,13 @@ struct pa_context;
 #include <tyran/tyran_types.h>
 
 typedef struct thunder_pulseaudio_sound_driver {
-    struct thunder_audio_buffer* buffer;
-    struct pa_stream* stream;
-    struct pa_context* context;
-    struct pa_mainloop* mainloop;
+	struct thunder_audio_buffer* buffer;
+	struct pa_stream* stream;
+	struct pa_context* context;
+	struct pa_threaded_mainloop* mainloop;
 } thunder_pulseaudio_sound_driver;
 
 void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, struct thunder_audio_buffer* buffer, tyran_boolean use_floats);
-void thunder_pulseaudio_sound_driver_update(thunder_pulseaudio_sound_driver* self);
 void thunder_pulseaudio_sound_driver_free(thunder_pulseaudio_sound_driver* self);
 
 #endif

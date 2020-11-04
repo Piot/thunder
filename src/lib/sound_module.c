@@ -36,8 +36,6 @@ void thunder_sound_module_update(thunder_sound_module* _self)
 {
 	thunder_sound_module* self = _self;
 
-	thunder_sound_driver_update(&self->driver);
-
 	float percentage = thunder_audio_buffer_percentage_full(&self->compositor.buffer);
 	if (percentage > 0.60f) {
 		return;
