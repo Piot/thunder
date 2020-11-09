@@ -28,9 +28,9 @@ SOFTWARE.
 #include <thunder/audio_node.h>
 #include <thunder/sound_buffer.h>
 #include <thunder/sound_compositor.h>
-#include <thunder/sound_module.h>
 
-static const int THUNDER_ATOM_SAMPLE_COUNT = 8 * 1024;
+static const int THUNDER_ATOM_SAMPLE_COUNT = 2 * 1024;
+static const int THUNDER_ATOM_COUNT_BUFFER = 6;
 
 static void mix_down_using_volume(thunder_mix_sample* source, int size, float mix_down_volume, thunder_sample* target)
 {
@@ -184,7 +184,7 @@ void thunder_audio_compositor_init(thunder_audio_compositor* self, struct imprin
 		self->nodes[i].output = 0;
 	}
 
-	thunder_audio_buffer_init(&self->buffer, memory, THUNDER_ATOM_SAMPLE_COUNT);
+	thunder_audio_buffer_init(&self->buffer, memory, THUNDER_ATOM_COUNT_BUFFER, THUNDER_ATOM_SAMPLE_COUNT);
 
 	self->mix_down_volume = 1;
 }

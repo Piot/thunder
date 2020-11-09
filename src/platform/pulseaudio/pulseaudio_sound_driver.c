@@ -11,22 +11,26 @@
 static void startPlayback(thunder_pulseaudio_sound_driver* self)
 {
 	const char* defaultDevice = 0;
-
-	/*
-	 *                 memset(&buffer_attr, 0, sizeof(buffer_attr));
-				buffer_attr.tlength = (uint32_t) latency;
-				buffer_attr.minreq = (uint32_t) process_time;
-				buffer_attr.maxlength = (uint32_t) -1;
-				buffer_attr.prebuf = (uint32_t) -1;
-				buffer_attr.fragsize = (uint32_t) latency;
-				flags |= PA_STREAM_ADJUST_LATENCY;
-	 */
-	pa_buffer_attr* defaultAttribute = 0;
 	const pa_cvolume* defaultVolume = 0;
 	pa_stream* defaultSyncStream = 0;
-	pa_stream_flags_t defaultFlags = 0;
+	pa_stream_flags_t flags = 0;
 
-	int error = pa_stream_connect_playback(self->stream, defaultDevice, defaultAttribute, defaultFlags, defaultVolume, defaultSyncStream);
+	const int STEREO_CHANNEL_COUNT = 2;
+	const int targetBufferOctetSize = 48000 * sizeof(uint16_t) * STEREO_CHANNEL_COUNT / 60;
+	const int maximumBufferOctetSize = targetBufferOctetSize * 2;
+
+	pa_buffer_attr bufferAttribute;
+	tc_mem_clear_type(&bufferAttribute);
+
+	bufferAttribute.maxlength = maximumBufferOctetSize;
+	bufferAttribute.tlength = targetBufferOctetSize;
+	bufferAttribute.prebuf = -1;
+	bufferAttribute.minreq = -1; // Minimum buffer requested by the server.
+	bufferAttribute.fragsize = -1; // Only for recording
+
+	flags |= PA_STREAM_ADJUST_LATENCY;
+
+	int error = pa_stream_connect_playback(self->stream, defaultDevice, &bufferAttribute, flags, defaultVolume, defaultSyncStream);
 	if (error != 0) {
 		CLOG_INFO("pa_stream_connect_playback error: %d", error)
 	}
@@ -40,7 +44,9 @@ static void writeCallback(pa_stream* stream, size_t octetLength, void* userdata)
 
 	int requiredSampleCount = octetLength / combinedSampleOctets;
 
-	const size_t bufferLength = 44100;
+	//printf("required sample count:%d\n", requiredSampleCount);
+
+	const size_t bufferLength = 48000;
 	thunder_sample_output_s16 buffer[bufferLength];
 
 	int convertedOctetCount = requiredSampleCount * combinedSampleOctets;
@@ -62,7 +68,6 @@ static void contextReadyCallback(thunder_pulseaudio_sound_driver* self)
 {
 	CLOG_INFO("context ready!");
 	pa_stream* stream;
-	const pa_channel_map* defaultChannelMap = 0;
 	const char* streamName = "Turmoil Sound";
 
 	pa_sample_spec sampleSpec;
@@ -71,7 +76,10 @@ static void contextReadyCallback(thunder_pulseaudio_sound_driver* self)
 	sampleSpec.channels = 2;
 	sampleSpec.rate = 48000;
 
-	if (!(stream = pa_stream_new(self->context, streamName, &sampleSpec, defaultChannelMap))) {
+	pa_channel_map channelMap;
+	pa_channel_map_init_stereo(&channelMap);
+
+	if (!(stream = pa_stream_new(self->context, streamName, &sampleSpec, &channelMap))) {
 		CLOG_ERROR("pa_stream_new() failed: %s", pa_strerror(pa_context_errno(self->context)));
 	}
 
@@ -101,13 +109,6 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
 {
 	self->buffer = buffer;
 
-	pa_sample_spec ss;
-	ss.format = PA_SAMPLE_S16BE;
-	ss.channels = 2;
-	ss.rate = 48000;
-
-	pa_stream* stream = 0;
-
 	pa_threaded_mainloop* mainloop;
 
 	if (!(mainloop = pa_threaded_mainloop_new())) {
@@ -135,13 +136,6 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
 	if (connectResult != 0) {
 		CLOG_ERROR("can not context")
 	}
-
-	/*
-		int ret;
-		if (pa_mainloop_run(mainloop, &ret) < 0) {
-			CLOG_INFO("pa_mainloop_run() failed.");
-		}
-		*/
 
 	pa_threaded_mainloop_start(mainloop);
 }

@@ -28,25 +28,21 @@ SOFTWARE.
 #include <thunder/sound_compositor.h>
 #include <thunder/sound_module.h>
 
-#include <clog/clog.h>
-
-#include <math.h>
-
 void thunder_sound_module_update(thunder_sound_module* _self)
 {
 	thunder_sound_module* self = _self;
 
-	float percentage = thunder_audio_buffer_percentage_full(&self->compositor.buffer);
-	if (percentage > 0.60f) {
+	int atomsFull = thunder_audio_buffer_atoms_full(&self->compositor.buffer);
+	if (atomsFull >= 4) {
 		return;
 	}
 
 	thunder_audio_compositor_update(&self->compositor);
-	if (percentage < 0.40f) {
+	if (atomsFull < 3) {
 		thunder_audio_compositor_update(&self->compositor);
 	}
 
-	if (percentage < 0.2f) {
+	if (atomsFull < 1) {
 		thunder_audio_compositor_update(&self->compositor);
 	}
 }
