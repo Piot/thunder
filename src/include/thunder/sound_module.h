@@ -56,10 +56,12 @@ void thunder_sound_module_init(thunder_sound_module* _self, struct imprint_memor
 
 void thunder_sound_module_update(thunder_sound_module* _self);
 
-void thunder_sound_module_play_sound(thunder_sound_module* self, int sound_id, int wave_id, tyran_number volume, int loop, tyran_boolean should_play);
+void thunder_sound_module_play_sound(thunder_sound_module* self, int sound_id, int wave_id, tyran_number volume,
+                                     int loop, tyran_boolean should_play);
 
 void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct imprint_memory* memory);
 
 void thunder_sound_module_add_node(thunder_sound_module* self, struct thunder_audio_node node);
+void thunder_sound_module_reload(thunder_sound_module* self);
 
 #endif

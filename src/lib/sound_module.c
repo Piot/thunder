@@ -30,37 +30,42 @@ SOFTWARE.
 
 void thunder_sound_module_update(thunder_sound_module* _self)
 {
-	thunder_sound_module* self = _self;
+    thunder_sound_module* self = _self;
 
-	int atomsFull = thunder_audio_buffer_atoms_full(&self->compositor.buffer);
-	if (atomsFull >= 4) {
-		return;
-	}
+    int atomsFull = thunder_audio_buffer_atoms_full(&self->compositor.buffer);
+    if (atomsFull >= 4) {
+        return;
+    }
 
-	thunder_audio_compositor_update(&self->compositor);
-	if (atomsFull < 3) {
-		thunder_audio_compositor_update(&self->compositor);
-	}
+    thunder_audio_compositor_update(&self->compositor);
+    if (atomsFull < 3) {
+        thunder_audio_compositor_update(&self->compositor);
+    }
 
-	if (atomsFull < 1) {
-		thunder_audio_compositor_update(&self->compositor);
-	}
+    if (atomsFull < 1) {
+        thunder_audio_compositor_update(&self->compositor);
+    }
 }
 
 void thunder_sound_module_add_node(thunder_sound_module* self, thunder_audio_node node)
 {
-	self->compositor.nodes[self->compositor.nodes_count++] = node;
+    self->compositor.nodes[self->compositor.nodes_count++] = node;
+}
+
+void thunder_sound_module_reload(thunder_sound_module* self)
+{
+    thunder_audio_compositor_reload(&self->compositor);
 }
 
 void thunder_sound_module_init(thunder_sound_module* self, struct imprint_memory* memory)
 {
-	self->memory = memory;
+    self->memory = memory;
 
-	thunder_audio_compositor_init(&self->compositor, memory);
+    thunder_audio_compositor_init(&self->compositor, memory);
 
-	thunder_audio_compositor_update(&self->compositor);
-	thunder_audio_compositor_update(&self->compositor);
-	thunder_audio_compositor_update(&self->compositor);
-	thunder_sound_driver_init(&self->driver, &self->compositor.buffer);
-	self->initialized = TYRAN_TRUE;
+    thunder_audio_compositor_update(&self->compositor);
+    thunder_audio_compositor_update(&self->compositor);
+    thunder_audio_compositor_update(&self->compositor);
+    thunder_sound_driver_init(&self->driver, &self->compositor.buffer);
+    self->initialized = TYRAN_TRUE;
 }

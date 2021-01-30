@@ -46,6 +46,8 @@ void thunder_audio_compositor_init(thunder_audio_compositor* self, struct imprin
 
 void thunder_audio_compositor_update(thunder_audio_compositor* self);
 
+void thunder_audio_compositor_reload(thunder_audio_compositor* self);
+
 void thunder_audio_compositor_free(thunder_audio_compositor* self);
 
 #endif

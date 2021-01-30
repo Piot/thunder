@@ -24,39 +24,37 @@ SOFTWARE.
 
 */
 #include <burst/burst_file_loader.h>
-#include <thunder/sound_loader.h>
-#include <thunder/sound_module.h>
 #include <clog/clog.h>
 #include <imprint/memory.h>
+#include <thunder/sound_loader.h>
+#include <thunder/sound_module.h>
 
 typedef struct example_app {
-	thunder_sound_module module;
-	imprint_memory global_mem;
+    thunder_sound_module module;
+    imprint_memory global_mem;
 } example_app;
-
 
 static example_app __app;
 
 void* g_breathe_init(int width, int height)
 {
-	example_app *self = &__app;
+    example_app* self = &__app;
 
-	imprint_memory_init(&self->global_mem, 64 * 1024 * 1024, "just an self");
-	thunder_sound_module_init(&self->module, &self->global_mem);
+    imprint_memory_init(&self->global_mem, 64 * 1024 * 1024, "just an self");
+    thunder_sound_module_init(&self->module, &self->global_mem);
 
-	thunder_sound_module_debug_sine_wave(&self->module, &self->global_mem);
+    thunder_sound_module_debug_sine_wave(&self->module, &self->global_mem);
 
-	return self;
+    return self;
 }
 
-int g_breathe_draw(void *_app)
+int g_breathe_draw(void* _app)
 {
-	example_app *self = _app;
-	thunder_sound_module_update(&self->module);
-	return 0;
+    example_app* self = _app;
+    thunder_sound_module_update(&self->module);
+    return 0;
 }
 
-void g_breathe_close(void *_app)
+void g_breathe_close(void* _app)
 {
-
 }

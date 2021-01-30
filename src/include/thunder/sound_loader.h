@@ -31,6 +31,7 @@ SOFTWARE.
 struct thunder_sound_wave;
 struct imprint_memory;
 
-void thunder_sound_loader_load(struct imprint_memory* memory, const u8t* data, int octets, struct thunder_sound_wave* sound);
+void thunder_sound_loader_load(struct imprint_memory* memory, const u8t* data, int octets,
+                               struct thunder_sound_wave* sound);
 
 #endif

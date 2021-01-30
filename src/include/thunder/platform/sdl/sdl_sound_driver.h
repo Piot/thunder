@@ -37,7 +37,8 @@ typedef struct thunder_sdl_sound_driver {
     SDL_AudioDeviceID device_handle;
 } thunder_sdl_sound_driver;
 
-void thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, struct thunder_audio_buffer* buffer, tyran_boolean use_floats);
+void thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, struct thunder_audio_buffer* buffer,
+                                   tyran_boolean use_floats);
 void thunder_sdl_sound_driver_free(thunder_sdl_sound_driver* self);
 
 #endif

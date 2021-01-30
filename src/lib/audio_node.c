@@ -28,7 +28,7 @@ SOFTWARE.
 
 void thunder_audio_node_init(thunder_audio_node* self, thunder_audio_node_output_func func, void* other_self)
 {
-	self->output = func;
-	CLOG_ASSERT(other_self != 0, "Must provide valid self");
-	self->_self = other_self;
+    self->output = func;
+    CLOG_ASSERT(other_self != 0, "Must provide valid self");
+    self->_self = other_self;
 }
