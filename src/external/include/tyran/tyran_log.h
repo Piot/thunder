@@ -34,17 +34,17 @@ SOFTWARE.
 enum tyran_log_type { TYRAN_LOG_TYPE_VERBOSE, TYRAN_LOG_TYPE_INFO, TYRAN_LOG_TYPE_WARN, TYRAN_LOG_TYPE_ERROR };
 
 typedef struct tyran_log {
-	void (*log)(enum tyran_log_type type, const char* string);
+    void (*log)(enum tyran_log_type type, const char* string);
 } tyran_log;
 
 extern tyran_log g_log;
 
-#define TYRAN_LOG_EX(logtype, ...)                                                                                                                                                                                                                             \
-	{                                                                                                                                                                                                                                                          \
-		char _temp_str[1024];                                                                                                                                                                                                                                  \
-		sprintf(_temp_str, __VA_ARGS__);                                                                                                                                                                                                                       \
-		g_log.log(logtype, _temp_str);                                                                                                                                                                                                                         \
-	}
+#define TYRAN_LOG_EX(logtype, ...)                                                                                     \
+    {                                                                                                                  \
+        char _temp_str[1024];                                                                                          \
+        sprintf(_temp_str, __VA_ARGS__);                                                                               \
+        g_log.log(logtype, _temp_str);                                                                                 \
+    }
 
 #if defined TYRAN_CONFIGURATION_DEBUG
 
@@ -54,21 +54,21 @@ extern tyran_log g_log;
 
 #define TYRAN_LOG_WARN(...) TYRAN_LOG_EX(TYRAN_LOG_TYPE_WARN, __VA_ARGS__)
 
-#define TYRAN_LOG_NO_LF(...)                                                                                                                                                                                                                                   \
-	{                                                                                                                                                                                                                                                          \
-		TYRAN_LOG(0, __VA_ARGS__);                                                                                                                                                                                                                             \
-	}
+#define TYRAN_LOG_NO_LF(...)                                                                                           \
+    {                                                                                                                  \
+        TYRAN_LOG(0, __VA_ARGS__);                                                                                     \
+    }
 #define TYRAN_SOFT_ERROR(...) TYRAN_LOG_WARN(__VA_ARGS__);
 #define TYRAN_BREAK
-#define TYRAN_ERROR(...)                                                                                                                                                                                                                                       \
-	TYRAN_LOG_EX(TYRAN_LOG_TYPE_ERROR, __VA_ARGS__);                                                                                                                                                                                                           \
-	TYRAN_OUTPUT(__VA_ARGS__);                                                                                                                                                                                                                                 \
-	TYRAN_BREAK;
-#define TYRAN_ASSERT(expression, ...)                                                                                                                                                                                                                          \
-	if (!(expression)) {                                                                                                                                                                                                                                       \
-		TYRAN_ERROR(__VA_ARGS__);                                                                                                                                                                                                                              \
-		TYRAN_BREAK;                                                                                                                                                                                                                                           \
-	}
+#define TYRAN_ERROR(...)                                                                                               \
+    TYRAN_LOG_EX(TYRAN_LOG_TYPE_ERROR, __VA_ARGS__);                                                                   \
+    TYRAN_OUTPUT(__VA_ARGS__);                                                                                         \
+    TYRAN_BREAK;
+#define TYRAN_ASSERT(expression, ...)                                                                                  \
+    if (!(expression)) {                                                                                               \
+        TYRAN_ERROR(__VA_ARGS__);                                                                                      \
+        TYRAN_BREAK;                                                                                                   \
+    }
 
 #else
 
@@ -84,16 +84,16 @@ extern tyran_log g_log;
 
 #endif
 
-#define TYRAN_OUTPUT(...)                                                                                                                                                                                                                                      \
-	{                                                                                                                                                                                                                                                          \
-		tyran_fprintf(stdout, __VA_ARGS__);                                                                                                                                                                                                                    \
-		tyran_fprintf(stdout, "\n");                                                                                                                                                                                                                           \
-		tyran_fflush(stdout);                                                                                                                                                                                                                                  \
-	}
-#define TYRAN_OUTPUT_NO_LF(...)                                                                                                                                                                                                                                \
-	{                                                                                                                                                                                                                                                          \
-		tyran_fprintf(stdout, __VA_ARGS__);                                                                                                                                                                                                                    \
-		tyran_fflush(stdout);                                                                                                                                                                                                                                  \
-	}
+#define TYRAN_OUTPUT(...)                                                                                              \
+    {                                                                                                                  \
+        tyran_fprintf(stdout, __VA_ARGS__);                                                                            \
+        tyran_fprintf(stdout, "\n");                                                                                   \
+        tyran_fflush(stdout);                                                                                          \
+    }
+#define TYRAN_OUTPUT_NO_LF(...)                                                                                        \
+    {                                                                                                                  \
+        tyran_fprintf(stdout, __VA_ARGS__);                                                                            \
+        tyran_fflush(stdout);                                                                                          \
+    }
 
 #endif
