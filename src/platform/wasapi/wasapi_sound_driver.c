@@ -1,3 +1,4 @@
+#include <thunder/platform/wasapi/wasapi_sound_driver.h>
 #include <Windows.h>
 #include <ole2.h>
 #include <audioclient.h>
@@ -244,4 +245,15 @@ int test()
    CHECKRETURN_HRESULT(audioClient->lpVtbl->Stop(audioClient))
 
        return 0;
+}
+
+
+void thunder_wasapi_sound_driver_init(thunder_wasapi_sound_driver* self, struct thunder_audio_buffer* buffer,
+                                          tyran_boolean use_floats)
+                                          {
+
+                                          }
+void thunder_wasapi_sound_driver_free(thunder_wasapi_sound_driver* self)
+{
+
 }

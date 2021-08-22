@@ -35,7 +35,7 @@ SOFTWARE.
 #elif defined TORNADO_OS_LINUX
 #include <thunder/platform/pulseaudio/sound_driver.h>
 #elif defined TORNADO_OS_WINDOWS
-#include <thunder/platform/coreaudio/sound_driver.h>
+#include <thunder/platform/wasapi/sound_driver.h>
 #else
 #error "Unknown platform"
 #endif
