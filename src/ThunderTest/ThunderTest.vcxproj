@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\platform\windows\core_audio_sound_driver.c" />
+    <ClCompile Include="..\platform\wasapi\wasapi_sound_driver.c" />
     <ClCompile Include="ThunderTest.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

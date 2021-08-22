@@ -24,21 +24,21 @@ SOFTWARE.
 
 */
 
-#ifndef thunder_coreaudio_sound_driver_impl_h
-#define thunder_coreaudio_sound_driver_impl_h
+#ifndef thunder_wasapi_sound_driver_impl_h
+#define thunder_wasapi_sound_driver_impl_h
 
 struct thunder_audio_buffer;
 
 
 #include <tyran/tyran_types.h>
 
-typedef struct thunder_coreaudio_sound_driver {
+typedef struct thunder_wasapi_sound_driver {
     struct thunder_audio_buffer* buffer;
 
-} thunder_coreaudio_sound_driver;
+} thunder_wasapi_sound_driver;
 
-void thunder_coreaudio_sound_driver_init(thunder_coreaudio_sound_driver* self, struct thunder_audio_buffer* buffer,
+void thunder_wasapi_sound_driver_init(thunder_wasapi_sound_driver* self, struct thunder_audio_buffer* buffer,
                                           tyran_boolean use_floats);
-void thunder_coreaudio_sound_driver_free(thunder_coreaudio_sound_driver* self);
+void thunder_wasapi_sound_driver_free(thunder_wasapi_sound_driver* self);
 
 #endif
