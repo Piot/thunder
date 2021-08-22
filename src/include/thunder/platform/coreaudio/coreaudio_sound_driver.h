@@ -23,27 +23,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
-#ifndef thunder_sound_driver_h
-#define thunder_sound_driver_h
 
-#include <thunder/sound_types.h>
+#ifndef thunder_coreaudio_sound_driver_impl_h
+#define thunder_coreaudio_sound_driver_impl_h
 
-#if defined TORNADO_OS_IOS || defined TORNADO_OS_MACOS
-#include <thunder/platform/ios/sound_driver.h>
-#elif defined TORNADO_OS_WEBASSEMBLY
-#include <thunder/platform/webassembly/sound_driver.h>
-#elif defined TORNADO_OS_LINUX
-#include <thunder/platform/pulseaudio/sound_driver.h>
-#elif defined TORNADO_OS_WINDOWS
-#include <thunder/platform/coreaudio/sound_driver.h>
-#else
-#error "Unknown platform"
-#endif
+struct thunder_audio_buffer;
 
-struct thunder_sound_buffer;
 
-void thunder_sound_driver_init(thunder_sound_driver* self, struct thunder_audio_buffer* buffer);
-void thunder_sound_driver_free(thunder_sound_driver* self);
-void thunder_sound_driver_update(thunder_sound_driver* self);
+#include <tyran/tyran_types.h>
+
+typedef struct thunder_coreaudio_sound_driver {
+    struct thunder_audio_buffer* buffer;
+
+} thunder_coreaudio_sound_driver;
+
+void thunder_coreaudio_sound_driver_init(thunder_coreaudio_sound_driver* self, struct thunder_audio_buffer* buffer,
+                                          tyran_boolean use_floats);
+void thunder_coreaudio_sound_driver_free(thunder_coreaudio_sound_driver* self);
 
 #endif

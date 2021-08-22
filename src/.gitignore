@@ -8,3 +8,5 @@ external/
 .idea/
 
 thunder_example
+.vs/
+out/
