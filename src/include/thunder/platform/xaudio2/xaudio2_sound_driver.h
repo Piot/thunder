@@ -23,27 +23,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
-#ifndef thunder_sound_driver_h
-#define thunder_sound_driver_h
 
+#ifndef thunder_xaudio2_sound_driver_impl_h
+#define thunder_xaudio2_sound_driver_impl_h
+
+struct thunder_audio_buffer;
+struct IXAudio2;
+struct IXAudio2SourceVoice;
+
+#include <tyran/tyran_types.h>
 #include <thunder/sound_types.h>
 
-#if defined TORNADO_OS_IOS || defined TORNADO_OS_MACOS
-#include <thunder/platform/ios/sound_driver.h>
-#elif defined TORNADO_OS_WEBASSEMBLY
-#include <thunder/platform/webassembly/sound_driver.h>
-#elif defined TORNADO_OS_LINUX
-#include <thunder/platform/pulseaudio/sound_driver.h>
-#elif defined TORNADO_OS_WINDOWS
-#include <thunder/platform/xaudio2/sound_driver.h>
-#else
-#error "Unknown platform"
-#endif
+typedef struct thunder_xaudio2_sound_driver {
+    struct thunder_audio_buffer* buffer;
+    struct IXAudio2* xaudio2;
+    struct IXAudio2MasteringVoice* masteringVoice;
+    struct IXAudio2SourceVoice* sourceVoice;
+    thunder_sample_output_s16* buffers[2];
+    int bufferAtomSizeInOctets;
+    int bufferAtomSizeInBlocks;
+    int activeBuffer;
+} thunder_xaudio2_sound_driver;
 
-struct thunder_sound_buffer;
-
-void thunder_sound_driver_init(thunder_sound_driver* self, struct thunder_audio_buffer* buffer);
-void thunder_sound_driver_free(thunder_sound_driver* self);
-void thunder_sound_driver_update(thunder_sound_driver* self);
+int thunder_xaudio2_sound_driver_init(thunder_xaudio2_sound_driver* self, struct thunder_audio_buffer* buffer,
+                                      tyran_boolean use_floats);
+void thunder_xaudio2_sound_driver_free(thunder_xaudio2_sound_driver* self);
 
 #endif

@@ -28,16 +28,22 @@ SOFTWARE.
 #define thunder_wasapi_sound_driver_impl_h
 
 struct thunder_audio_buffer;
-
+struct IMMDevice;
+struct IAudioClient;
+struct IAudioRenderClient;
 
 #include <tyran/tyran_types.h>
 
 typedef struct thunder_wasapi_sound_driver {
     struct thunder_audio_buffer* buffer;
-
+    struct IMMDevice* device;
+    struct IAudioClient* audioClient;
+    struct  IAudioRenderClient* renderClient;
+    unsigned int maxBufferFrameCount;
+    void* thread;
 } thunder_wasapi_sound_driver;
 
-void thunder_wasapi_sound_driver_init(thunder_wasapi_sound_driver* self, struct thunder_audio_buffer* buffer,
+int thunder_wasapi_sound_driver_init(thunder_wasapi_sound_driver* self, struct thunder_audio_buffer* buffer,
                                           tyran_boolean use_floats);
 void thunder_wasapi_sound_driver_free(thunder_wasapi_sound_driver* self);
 

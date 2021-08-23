@@ -1,29 +1,16 @@
 #include <thunder/platform/wasapi/wasapi_sound_driver.h>
+#include <WinSock2.h>
 #include <Windows.h>
 #include <ole2.h>
-#include <audioclient.h>
 #include <initguid.h>
+#include <stdio.h>
+#include <audioclient.h>
 #include <mmdeviceapi.h>
 
-#include <stdio.h>
+#include <thunder/sound_buffer.h>
 #include <math.h>
+#include <clog/clog.h>
 
-static int printfDebug(const char* format, ...)
-{
-    char str[1024];
-
-    va_list argumentStart;
-
-    va_start(argumentStart, format);
-
-    int returnCode = vsnprintf(str, sizeof(str), format, argumentStart);
-
-    va_end(argumentStart);
-
-    OutputDebugStringA(str);
-
-    return returnCode;
-}
 
 static int createEnumerator(IMMDeviceEnumerator** target)
 {
@@ -106,11 +93,8 @@ float g_sineTime = 0;
 static int fillBufferWithSine(IAudioRenderClient* renderClient, UINT32 blockAlignFrames, WORD blockAlign)
 {
     BYTE* pData;
-    if (blockAlign != 4 * 2) {
-        printfDebug("error\n");
 
-    }
-    printfDebug("filling with %d samples \n", blockAlignFrames);
+    CLOG_DEBUG("filling with %d samples \n", blockAlignFrames);
     CHECKRETURN_HRESULT(renderClient->lpVtbl->GetBuffer(renderClient, blockAlignFrames, &pData))
 
     float* p = (float*) pData;
@@ -133,7 +117,7 @@ static int fillBufferWithSine(IAudioRenderClient* renderClient, UINT32 blockAlig
 static void printFormat(const WAVEFORMATEXTENSIBLE* waveFormatExtensible, const char* prefix)
 {
     const WAVEFORMATEX* waveFormat = &waveFormatExtensible->Format;
-    printfDebug("%s: channels %d freq %d bits %d (%d)\n", prefix, waveFormat->nChannels, waveFormat->nSamplesPerSec,
+    CLOG_DEBUG("%s: channels %d freq %d bits %d (%d)\n", prefix, waveFormat->nChannels, waveFormat->nSamplesPerSec,
                 waveFormat->wBitsPerSample, waveFormat->wFormatTag);
 }
 
@@ -173,11 +157,11 @@ static int checkFormat(IAudioClient* audioClient, UINT32 frequency, WORD bits)
     HRESULT hr = audioClient->lpVtbl->IsFormatSupported(audioClient, shareMode, (WAVEFORMATEX*) &proposedFormat,
                                                         (WAVEFORMATEX**) &closestMatch);
     if (hr == S_OK) {
-        printfDebug("Supported!\n");
+        CLOG_DEBUG("Supported!\n");
     } else if (hr == S_FALSE) {
-        printfDebug("Not supported, but I have a close match: ");
+        CLOG_DEBUG("Not supported, but I have a close match: ");
     } else {
-        printfDebug("Not supported at all. No close match. \n");
+        CLOG_DEBUG("Not supported at all. No close match. \n");
     }
 
     printFormat(closestMatch, "closestMatch");
@@ -185,7 +169,7 @@ static int checkFormat(IAudioClient* audioClient, UINT32 frequency, WORD bits)
     return hr == S_OK;
 }
 
-int test()
+static int init(thunder_wasapi_sound_driver* self)
 {
     CHECKRETURN_HRESULT(CoInitialize(0))
 
@@ -214,46 +198,91 @@ int test()
 
 
         printFormat(waveFormat, "getMixFormat");
-       checkFormat(audioClient, 48000, 32);
-       checkFormat(audioClient, 48000, 16);
-       checkFormat(audioClient, 41000, 16);
 
-   setupStereoFormat(waveFormat, 44100, 32);
+   //setupStereoFormat(waveFormat, 44100, 32);
 #define MINIMUM_BUFFER_SIZE_IN_MS (80)
    CHECKRETURN(initializeFormat(audioClient, MINIMUM_BUFFER_SIZE_IN_MS, (WAVEFORMATEX*) waveFormat))
 
    UINT32 maxBufferFrameCount;
    CHECKRETURN(audioClient->lpVtbl->GetBufferSize(audioClient, &maxBufferFrameCount))
-   printfDebug("blockAlignFrames: %d\n", maxBufferFrameCount);
+   CLOG_DEBUG("blockAlignFrames: %d", maxBufferFrameCount);
 
     IAudioRenderClient* pRenderClient;
     CHECKRETURN(getRenderClient(audioClient, &pRenderClient))
-    printfDebug("\nWorked\n");
+    CLOG_DEBUG("Worked");
 
     fillBufferWithSine(pRenderClient, maxBufferFrameCount, waveFormat->Format.nBlockAlign);
 
-   CHECKRETURN_HRESULT(audioClient->lpVtbl->Start(audioClient))
-
-       for (int i = 0; i < 1000; ++i) {
-           Sleep(1);
-           UINT32 paddingFrames;
-           audioClient->lpVtbl->GetCurrentPadding(audioClient, &paddingFrames);
-           UINT32 framesAvailableInBuffer = maxBufferFrameCount - paddingFrames;
-           fillBufferWithSine(pRenderClient, framesAvailableInBuffer, waveFormat->Format.nBlockAlign);
-       }
-
-   CHECKRETURN_HRESULT(audioClient->lpVtbl->Stop(audioClient))
+    self->audioClient = audioClient;
+    self->renderClient = pRenderClient;
+    self->device = device;
+    self->maxBufferFrameCount = maxBufferFrameCount;
 
        return 0;
 }
 
 
-void thunder_wasapi_sound_driver_init(thunder_wasapi_sound_driver* self, struct thunder_audio_buffer* buffer,
+    uint32_t g_resampleCounter = 0;
+
+ static int callback(thunder_wasapi_sound_driver* self)
+{
+     thunder_sample_output_s16 tempBuffer[16 * 1024];
+    UINT32 paddingFrames;
+    self->audioClient->lpVtbl->GetCurrentPadding(self->audioClient, &paddingFrames);
+    UINT32 framesAvailableInBuffer = self->maxBufferFrameCount - paddingFrames;
+
+    thunder_audio_buffer_read(self->buffer, tempBuffer, framesAvailableInBuffer*2);
+
+    BYTE* pData;
+    CLOG_DEBUG("filling with %d samples", framesAvailableInBuffer);
+    CHECKRETURN_HRESULT(self->renderClient->lpVtbl->GetBuffer(self->renderClient, framesAvailableInBuffer, &pData))
+
+
+    float* target = pData;
+    thunder_sample_output_s16* source = tempBuffer;
+    for (size_t i = 0; i < framesAvailableInBuffer; ++i) {
+        float v = *source++ / 32768.0f;
+        float r = *source++ / 32768.0f;
+        g_resampleCounter++;
+        if ((g_resampleCounter % 12) == 0) {
+            v = (v + (*source++ / 32768.0f)) / 2.0f;
+            r = (r + (*source++ / 32768.0f)) / 2.0f;
+        }
+        *target++ = v;
+        *target++ = r;
+    }
+
+
+    DWORD flags = 0; // AUDCLNT_BUFFERFLAGS_SILENT
+    self->renderClient->lpVtbl->ReleaseBuffer(self->renderClient, framesAvailableInBuffer, flags);
+}
+    
+
+static DWORD __stdcall wasapiThread(LPVOID context)
+{
+    while (1) {
+        Sleep(1);
+        callback((thunder_wasapi_sound_driver*) context);
+    }
+}
+
+
+int thunder_wasapi_sound_driver_init(thunder_wasapi_sound_driver* self, struct thunder_audio_buffer* buffer,
                                           tyran_boolean use_floats)
                                           {
+    int errorCode;
+    CHECKRETURN(init(self));
+    self->buffer = buffer;
+   CHECKRETURN_HRESULT(self->audioClient->lpVtbl->Start(self->audioClient))
+    self->thread = CreateThread(NULL, 0, wasapiThread, self, 0, NULL);
 
                                           }
+
+
+
+
 void thunder_wasapi_sound_driver_free(thunder_wasapi_sound_driver* self)
 {
-
+    CHECKRETURN_HRESULT(self->audioClient->lpVtbl->Stop(self->audioClient))
+    CloseHandle(self->thread);
 }
