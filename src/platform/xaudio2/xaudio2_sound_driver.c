@@ -36,6 +36,14 @@ typedef struct thunder_xaudio2_callback {
         }                                                                                                              \
     }
 
+#define CHECKRETURN_HRESULT_PANIC(code)                                                                                      \
+    {                                                                                                                  \
+        HRESULT hr;                                                                                                    \
+        if ((hr = code) != S_OK) {                                                                                     \
+            CLOG_ERROR("operation failed %08X", hr);                                                                    \
+        }                                                                                                              \
+    }
+
 float g_sineTime = 0;
 
 /*
@@ -131,7 +139,7 @@ static void WINAPI onBufferEnd(IXAudio2VoiceCallback* iface, void* pBufferContex
     xAudioBuffer2.AudioBytes = self->bufferAtomSizeInOctets;
     xAudioBuffer2.pAudioData = buffer;
     thunder_audio_buffer_read(self->buffer, buffer, self->bufferAtomSizeInOctets/2);
-    CHECKRETURN_HRESULT(self->sourceVoice->lpVtbl->SubmitSourceBuffer(self->sourceVoice, &xAudioBuffer2, 0))
+    CHECKRETURN_HRESULT_PANIC(self->sourceVoice->lpVtbl->SubmitSourceBuffer(self->sourceVoice, &xAudioBuffer2, 0))
     self->activeBuffer = !self->activeBuffer;
 }
 
