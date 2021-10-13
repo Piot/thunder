@@ -52,7 +52,7 @@ typedef struct thunder_sound_module {
     tyran_boolean initialized;
 } thunder_sound_module;
 
-void thunder_sound_module_init(thunder_sound_module* _self, struct imprint_memory* memory);
+int thunder_sound_module_init(thunder_sound_module* _self, struct imprint_memory* memory);
 
 void thunder_sound_module_update(thunder_sound_module* _self);
 

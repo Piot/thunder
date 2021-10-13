@@ -197,13 +197,16 @@ static int init(thunder_xaudio2_sound_driver* self)
     CHECKRETURN_HRESULT(IXAudio2_StartEngine(self->xaudio2))
 
     XAUDIO2_BUFFER xAudioBuffer;
+    tc_mem_clear_type(&xAudioBuffer);
     xAudioBuffer.AudioBytes = self->bufferAtomSizeInOctets;
     xAudioBuffer.pAudioData = self->buffers[self->activeBuffer];
+
 
     CHECKRETURN_HRESULT(self->sourceVoice->lpVtbl->SubmitSourceBuffer(self->sourceVoice, &xAudioBuffer, 0))
 
     self->activeBuffer = !self->activeBuffer;
     XAUDIO2_BUFFER xAudioBuffer2;
+    tc_mem_clear_type(&xAudioBuffer2);
     xAudioBuffer2.AudioBytes = self->bufferAtomSizeInOctets;
     xAudioBuffer2.pAudioData = self->buffers[self->activeBuffer];
     self->activeBuffer = !self->activeBuffer;
