@@ -107,7 +107,7 @@ static void stateCallback(pa_context* c, void* userdata)
     }
 }
 
-void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, thunder_audio_buffer* buffer,
+int thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, thunder_audio_buffer* buffer,
                                           tyran_boolean use_floats)
 {
     self->buffer = buffer;
@@ -116,7 +116,7 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
 
     if (!(mainloop = pa_threaded_mainloop_new())) {
         CLOG_ERROR("mainloop")
-        return;
+        return -2;
     }
     self->mainloop = mainloop;
 
@@ -138,11 +138,13 @@ void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self,
     int connectResult = pa_context_connect(context, serverHostname, 0, 0);
     if (connectResult != 0) {
         CLOG_ERROR("can not context")
+        return connectResult;
     }
 
-    pa_threaded_mainloop_start(mainloop);
+    return pa_threaded_mainloop_start(mainloop);
 }
 
 void thunder_pulseaudio_sound_driver_free(thunder_pulseaudio_sound_driver* self)
 {
+
 }

@@ -40,7 +40,7 @@ typedef struct thunder_pulseaudio_sound_driver {
     struct pa_threaded_mainloop* mainloop;
 } thunder_pulseaudio_sound_driver;
 
-void thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, struct thunder_audio_buffer* buffer,
+int thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, struct thunder_audio_buffer* buffer,
                                           tyran_boolean use_floats);
 void thunder_pulseaudio_sound_driver_free(thunder_pulseaudio_sound_driver* self);
 
