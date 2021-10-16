@@ -33,18 +33,15 @@ void thunder_sound_module_update(thunder_sound_module* _self)
     thunder_sound_module* self = _self;
 
     int atomsFull = thunder_audio_buffer_atoms_full(&self->compositor.buffer);
-    if (atomsFull >= 4) {
+    if (atomsFull >= 2) {
         return;
     }
 
     thunder_audio_compositor_update(&self->compositor);
-    if (atomsFull < 3) {
-        thunder_audio_compositor_update(&self->compositor);
-    }
-
     if (atomsFull < 1) {
         thunder_audio_compositor_update(&self->compositor);
     }
+
 }
 
 void thunder_sound_module_add_node(thunder_sound_module* self, thunder_audio_node node)
