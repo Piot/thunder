@@ -58,7 +58,7 @@ static void generate_sine(void* _self, thunder_sample* output, int sample_count)
     }
 }
 
-thunder_audio_node make_sine_node(uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
+static thunder_audio_node make_sine_node(uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
 {
     thunder_audio_node self;
     debug_sine* data = tc_malloc_type(debug_sine);
@@ -79,7 +79,7 @@ thunder_audio_node make_sine_node(uint64_t offset, uint64_t factor, uint64_t amp
     return self;
 }
 
-void add_sine(thunder_sound_module* self, uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
+static void add_sine(thunder_sound_module* self, uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
 {
     (void) offset;
 

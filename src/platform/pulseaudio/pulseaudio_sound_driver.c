@@ -56,7 +56,7 @@ static void writeCallback(pa_stream* stream, size_t octetLength, void* userdata)
     thunder_audio_buffer_read(self->buffer, buffer, requiredSampleCount);
 
     if (pa_stream_write(stream, (uint8_t*) buffer, convertedOctetCount, 0, 0, PA_SEEK_RELATIVE) < 0) {
-        CLOG_ERROR("pa_stream_write() failed: %s\n", pa_strerror(pa_context_errno(self->context)));
+        CLOG_ERROR("pa_stream_write() failed: %s\n", pa_strerror(pa_context_errno(self->context)))
         return;
     }
 }
