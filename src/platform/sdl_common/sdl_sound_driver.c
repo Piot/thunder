@@ -83,7 +83,7 @@ static void audio_format(SDL_AudioSpec* want, SDL_AudioFormat format, SDL_AudioC
     want->callback = callback;
 }
 
-void thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, thunder_audio_buffer* buffer,
+int thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, thunder_audio_buffer* buffer,
                                    tyran_boolean use_floats)
 {
     SDL_InitSubSystem(SDL_INIT_AUDIO);
@@ -96,15 +96,17 @@ void thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, thunder_audio
     SDL_AudioDeviceID result = SDL_OpenAudioDevice(0, 0, &want, &have, 0);
     if (result <= 0) {
         CLOG_WARN("sdl2: failed to open audio device '%s'", SDL_GetError());
-        return;
+        return -1;
     }
     self->device_handle = result;
     if (have.format != want.format) {
         CLOG_WARN("We didn't get what we wanted.%d", have.format);
-        return;
+        return -2;
     }
     CLOG_VERBOSE("Resulting playback format:%d freq:%d samples:%d", have.format, have.freq, have.samples);
     start_playback(self);
+
+    return 0;
 }
 
 void thunder_sdl_sound_driver_free(thunder_sdl_sound_driver* self)

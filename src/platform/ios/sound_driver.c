@@ -87,12 +87,14 @@ static void open_output(thunder_sound_driver* self, float sample_rate)
     CLOG_ASSERT(err == 0, "AudioQueueNewOutput err:%d", (unsigned int) err);
 }
 
-void thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
+int thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
 {
     self->buffer = buffer;
     open_output(self, 48000.0f);
     create_and_fill_buffers(self);
     start_playback(self);
+
+    return 0;
 }
 
 void thunder_sound_driver_free(thunder_sound_driver* self)
