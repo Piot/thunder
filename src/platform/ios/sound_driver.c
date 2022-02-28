@@ -24,13 +24,15 @@ SOFTWARE.
 
 */
 #include <clog/clog.h>
+#include <thunder/sound_buffer.h>
+#include <thunder/sound_driver.h>
 #include <thunder/platform/ios/sound_driver.h>
 #include <thunder/sound_buffer.h>
 #include <tyran/tyran_types.h>
 
 #include <stdint.h>
 
-const int audio_buffer_size = 2 * 1024;
+const static int audio_buffer_size = 2 * 1024;
 
 static void fill_buffer_callback(void* _self, AudioQueueRef queue, AudioQueueBufferRef buffer)
 {
