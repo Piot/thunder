@@ -4,22 +4,8 @@ name = "piot/thunder"
 version = "0.0.0"
 
 [[dependencies]]
-name = 'piot/tiny-libc'
-version = "*"
-
-[[dependencies]]
-name = 'piot/clog'
-version = "*"
-
-[[dependencies]]
-name = 'piot/tyran'
-version = "*"
-
-[[dependencies]]
 name = 'piot/imprint'
 version = "*"
-
-
 
 [[development]]
 name = 'piot/breathe'
