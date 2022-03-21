@@ -26,10 +26,10 @@ SOFTWARE.
 #ifndef thunder_sound_types_h
 #define thunder_sound_types_h
 
-#include <tyran/tyran_types.h>
+#include <stdint.h>
 
-typedef s16t thunder_sample_output_s16;
-typedef s16t thunder_sample;
-typedef s32t thunder_mix_sample;
+typedef int16_t thunder_sample_output_s16;
+typedef int16_t thunder_sample;
+typedef int32_t thunder_mix_sample;
 
 #endif

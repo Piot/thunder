@@ -26,12 +26,12 @@ SOFTWARE.
 #ifndef thunder_sound_loader_h
 #define thunder_sound_loader_h
 
-#include <tyran/tyran_types.h>
+#include <stdbool.h>
 
 struct thunder_sound_wave;
-struct imprint_memory;
+struct ImprintMemory;
 
-void thunder_sound_loader_load(struct imprint_memory* memory, const u8t* data, int octets,
+void thunder_sound_loader_load(struct ImprintMemory* memory, const uint8_t* data, int octets,
                                struct thunder_sound_wave* sound);
 
 #endif

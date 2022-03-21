@@ -27,16 +27,17 @@ SOFTWARE.
 #define thunder_audio_node_h
 
 #include <thunder/sound_types.h>
+#include <stdbool.h>
 
 typedef void (*thunder_audio_node_output_func)(void* self, thunder_sample* sample, int sample_count);
 
 typedef struct thunder_audio_node {
     thunder_audio_node_output_func output;
     void* _self;
-    tyran_boolean is_playing;
+    bool is_playing;
     int channel_count;
     int pan;
-    tyran_number volume;
+    float volume;
 } thunder_audio_node;
 
 void thunder_audio_node_init(thunder_audio_node* self, thunder_audio_node_output_func func, void* user_data);

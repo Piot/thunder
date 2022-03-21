@@ -32,7 +32,7 @@ struct IMMDevice;
 struct IAudioClient;
 struct IAudioRenderClient;
 
-#include <tyran/tyran_types.h>
+#include <stdbool.h>
 
 typedef struct thunder_wasapi_sound_driver {
     struct thunder_audio_buffer* buffer;
@@ -44,7 +44,7 @@ typedef struct thunder_wasapi_sound_driver {
 } thunder_wasapi_sound_driver;
 
 int thunder_wasapi_sound_driver_init(thunder_wasapi_sound_driver* self, struct thunder_audio_buffer* buffer,
-                                          tyran_boolean use_floats);
+                                          bool use_floats);
 void thunder_wasapi_sound_driver_free(thunder_wasapi_sound_driver* self);
 
 #endif

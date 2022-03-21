@@ -27,6 +27,7 @@ SOFTWARE.
 #define thunder_sound_circular_buffer_h
 
 #include <thunder/sound_types.h>
+#include <stddef.h>
 
 typedef struct ThunderAudioCircularBuffer {
     int max_size;

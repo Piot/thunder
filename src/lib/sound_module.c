@@ -54,7 +54,7 @@ void thunder_sound_module_reload(thunder_sound_module* self)
     thunder_audio_compositor_reload(&self->compositor);
 }
 
-int thunder_sound_module_init(thunder_sound_module* self, struct imprint_memory* memory)
+int thunder_sound_module_init(thunder_sound_module* self, struct ImprintMemory* memory)
 {
     self->memory = memory;
 
@@ -67,7 +67,7 @@ int thunder_sound_module_init(thunder_sound_module* self, struct imprint_memory*
     if (err < 0) {
         return err;
     }
-    self->initialized = TYRAN_TRUE;
+    self->initialized = true;
 
     return 0;
 }

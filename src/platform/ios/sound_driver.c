@@ -28,7 +28,7 @@ SOFTWARE.
 #include <thunder/sound_driver.h>
 #include <thunder/platform/ios/sound_driver.h>
 #include <thunder/sound_buffer.h>
-#include <tyran/tyran_types.h>
+#include <stdbool.h>
 
 #include <stdint.h>
 

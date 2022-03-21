@@ -103,7 +103,7 @@ static void adjust_mix_down_volume(thunder_audio_compositor* self, thunder_mix_s
 }
 
 static void add_to_output(thunder_mix_sample* output, int channel, int number_of_channels,
-                          const thunder_sample* source_sample, tyran_number volume)
+                          const thunder_sample* source_sample, float volume)
 {
     thunder_mix_sample* target = output + channel;
     thunder_mix_sample* end = output + THUNDER_ATOM_SAMPLE_COUNT; // - channel;
@@ -148,7 +148,7 @@ static void enumerate_nodes(thunder_audio_compositor* self)
                 add_to_output(output, 0, 1, source, node->volume);
             } else {
                 node->output(node->_self, source, THUNDER_ATOM_SAMPLE_COUNT / 2);
-                tyran_number normalized_pan = (node->pan + 1.0f) / 2.0f;
+                float normalized_pan = (node->pan + 1.0f) / 2.0f;
                 add_to_output(output, LEFT_CHANNEL, NUMBER_OF_OUTPUT_CHANNELS, source, normalized_pan * node->volume);
                 add_to_output(output, RIGHT_CHANNEL, NUMBER_OF_OUTPUT_CHANNELS, source,
                               (1.0f - normalized_pan) * node->volume);
@@ -190,12 +190,12 @@ void thunder_audio_compositor_reload(thunder_audio_compositor* self)
     self->nodes_count = 0;
 }
 
-void thunder_audio_compositor_init(thunder_audio_compositor* self, struct imprint_memory* memory)
+void thunder_audio_compositor_init(thunder_audio_compositor* self, struct ImprintMemory* memory)
 {
-    self->output = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_mix_sample, THUNDER_ATOM_SAMPLE_COUNT);
-    self->output_16_bit = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample, THUNDER_ATOM_SAMPLE_COUNT);
+    self->output = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_mix_sample, THUNDER_ATOM_SAMPLE_COUNT);
+    self->output_16_bit = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample, THUNDER_ATOM_SAMPLE_COUNT);
     self->nodes_max_count = 10;
-    self->nodes = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_audio_node, self->nodes_max_count);
+    self->nodes = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_audio_node, self->nodes_max_count);
     for (int i = 0; i < self->nodes_max_count; ++i) {
         self->nodes[i]._self = 0;
         self->nodes[i].output = 0;

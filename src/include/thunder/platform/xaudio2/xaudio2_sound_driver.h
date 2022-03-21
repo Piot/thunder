@@ -31,7 +31,7 @@ struct thunder_audio_buffer;
 struct IXAudio2;
 struct IXAudio2SourceVoice;
 
-#include <tyran/tyran_types.h>
+#include <stdbool.h>
 #include <thunder/sound_types.h>
 
 typedef struct thunder_xaudio2_sound_driver {
@@ -46,7 +46,7 @@ typedef struct thunder_xaudio2_sound_driver {
 } thunder_xaudio2_sound_driver;
 
 int thunder_xaudio2_sound_driver_init(thunder_xaudio2_sound_driver* self, struct thunder_audio_buffer* buffer,
-                                      tyran_boolean use_floats);
+                                      bool use_floats);
 void thunder_xaudio2_sound_driver_free(thunder_xaudio2_sound_driver* self);
 
 #endif

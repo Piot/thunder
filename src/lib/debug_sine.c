@@ -45,9 +45,9 @@ static void generate_sine(void* _self, thunder_sample* output, int sample_count)
     // printf("sine:%d\n", sample_count);
     debug_sine* self = _self;
     for (int i = 0; i < sample_count; ++i) {
-        tyran_number angle = (self->time % 628318) / 100000.0f;
-        tyran_number f = sinf(angle);
-        tyran_number amplitude = self->amplitude / 1000000.0f;
+        float angle = (self->time % 628318) / 100000.0f;
+        float f = sinf(angle);
+        float amplitude = self->amplitude / 1000000.0f;
 
         output[i] = (f * 32767.0f * amplitude);
         self->time += self->timeFactor;
@@ -87,7 +87,7 @@ static void add_sine(thunder_sound_module* self, uint64_t offset, uint64_t facto
     thunder_sound_module_add_node(self, node);
 }
 
-void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct imprint_memory* memory)
+void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct ImprintMemory* memory)
 {
     (void) memory;
 

@@ -31,7 +31,7 @@ struct thunder_audio_buffer;
 struct pa_stream;
 struct pa_context;
 
-#include <tyran/tyran_types.h>
+#include <stdbool.h>
 
 typedef struct thunder_pulseaudio_sound_driver {
     struct thunder_audio_buffer* buffer;
@@ -41,7 +41,7 @@ typedef struct thunder_pulseaudio_sound_driver {
 } thunder_pulseaudio_sound_driver;
 
 int thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, struct thunder_audio_buffer* buffer,
-                                          tyran_boolean use_floats);
+                                          bool use_floats);
 void thunder_pulseaudio_sound_driver_free(thunder_pulseaudio_sound_driver* self);
 
 #endif

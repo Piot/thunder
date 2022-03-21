@@ -29,20 +29,20 @@ SOFTWARE.
 #include <thunder/sound_buffer.h>
 #include <thunder/sound_types.h>
 
-struct imprint_memory;
+struct ImprintMemory;
 struct thunder_audio_node;
 
 typedef struct thunder_audio_compositor {
     struct thunder_audio_node* nodes;
     int nodes_max_count;
     int nodes_count;
-    tyran_number mix_down_volume;
+    float mix_down_volume;
     thunder_audio_buffer buffer;
     thunder_mix_sample* output;
     thunder_sample* output_16_bit;
 } thunder_audio_compositor;
 
-void thunder_audio_compositor_init(thunder_audio_compositor* self, struct imprint_memory* memory);
+void thunder_audio_compositor_init(thunder_audio_compositor* self, struct ImprintMemory* memory);
 
 void thunder_audio_compositor_update(thunder_audio_compositor* self);
 

@@ -81,15 +81,15 @@ void thunder_audio_buffer_read(thunder_audio_buffer* self, thunder_sample_output
     }
 }
 
-void thunder_audio_buffer_init(thunder_audio_buffer* self, imprint_memory* memory, int bufferCount, int atom_size)
+void thunder_audio_buffer_init(thunder_audio_buffer* self, ImprintMemory* memory, int bufferCount, int atom_size)
 {
     self->buffer_count = bufferCount;
     self->atom_size = atom_size;
     self->read_index = -1;
     self->write_index = 0;
-    self->buffers = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample_output_s16*, self->buffer_count);
+    self->buffers = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample_output_s16*, self->buffer_count);
     for (int i = 0; i < self->buffer_count; ++i) {
-        self->buffers[i] = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample_output_s16, atom_size);
+        self->buffers[i] = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample_output_s16, atom_size);
     }
     self->read_buffer = 0;
     self->read_buffer_samples_left = 0;
