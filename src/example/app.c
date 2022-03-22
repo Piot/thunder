@@ -31,7 +31,7 @@ SOFTWARE.
 
 typedef struct example_app {
     thunder_sound_module module;
-    imprint_memory global_mem;
+    ImprintMemory global_mem;
 } example_app;
 
 static example_app __app;
@@ -40,7 +40,7 @@ void* g_breathe_init(int width, int height)
 {
     example_app* self = &__app;
 
-    imprint_memory_init(&self->global_mem, 64 * 1024 * 1024, "just an self");
+    imprintMemoryInit(&self->global_mem, 64 * 1024 * 1024, "just an self");
     thunder_sound_module_init(&self->module, &self->global_mem);
 
     thunder_sound_module_debug_sine_wave(&self->module, &self->global_mem);

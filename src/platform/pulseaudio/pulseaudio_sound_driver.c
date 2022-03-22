@@ -2,7 +2,7 @@
 
 #include <clog/clog.h>
 #include <thunder/sound_buffer.h>
-#include <tyran/tyran_types.h>
+
 
 #include <pulse/error.h>
 #include <pulse/pulseaudio.h>
@@ -108,7 +108,7 @@ static void stateCallback(pa_context* c, void* userdata)
 }
 
 int thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, thunder_audio_buffer* buffer,
-                                          tyran_boolean use_floats)
+                                          bool use_floats)
 {
     self->buffer = buffer;
 

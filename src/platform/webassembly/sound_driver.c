@@ -26,14 +26,13 @@ SOFTWARE.
 #include <clog/clog.h>
 #include <thunder/platform/webassembly/sound_driver.h>
 #include <thunder/sound_buffer.h>
-#include <tyran/tyran_types.h>
 
 #include <SDL2/SDL.h>
 #if 0
 
 int thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
 {
-	return thunder_sdl_sound_driver_init(&self->sdl_driver, buffer, TYRAN_TRUE);
+	return thunder_sdl_sound_driver_init(&self->sdl_driver, buffer, true);
 }
 
 void thunder_sound_driver_free(thunder_sound_driver* self)

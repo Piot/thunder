@@ -3,7 +3,6 @@
 #include <SDL2/SDL.h>
 #include <clog/clog.h>
 #include <thunder/sound_buffer.h>
-#include <tyran/tyran_types.h>
 
 #include <SDL2/SDL.h>
 
@@ -84,7 +83,7 @@ static void audio_format(SDL_AudioSpec* want, SDL_AudioFormat format, SDL_AudioC
 }
 
 int thunder_sdl_sound_driver_init(thunder_sdl_sound_driver* self, thunder_audio_buffer* buffer,
-                                   tyran_boolean use_floats)
+                                   bool use_floats)
 {
     SDL_InitSubSystem(SDL_INIT_AUDIO);
     self->buffer = buffer;

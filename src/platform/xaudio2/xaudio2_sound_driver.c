@@ -240,7 +240,7 @@ static int callback(thunder_xaudio2_sound_driver* self)
 }
 
 int thunder_xaudio2_sound_driver_init(thunder_xaudio2_sound_driver* self, struct thunder_audio_buffer* buffer,
-                                      tyran_boolean use_floats)
+                                      bool use_floats)
 {
     CLOG_DEBUG("xaudio2 init");
     self->buffer = buffer;

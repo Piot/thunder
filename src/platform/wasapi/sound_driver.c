@@ -5,7 +5,7 @@
 
 int thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
 {
-    return thunder_wasapi_sound_driver_init(&self->wasapi_driver, buffer, TYRAN_FALSE);
+    return thunder_wasapi_sound_driver_init(&self->wasapi_driver, buffer, false);
 }
 
 void thunder_sound_driver_free(thunder_sound_driver* self)

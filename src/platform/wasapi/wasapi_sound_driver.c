@@ -268,7 +268,7 @@ static DWORD __stdcall wasapiThread(LPVOID context)
 
 
 int thunder_wasapi_sound_driver_init(thunder_wasapi_sound_driver* self, struct thunder_audio_buffer* buffer,
-                                          tyran_boolean use_floats)
+                                          bool use_floats)
                                           {
     int errorCode;
     CHECKRETURN(init(self));

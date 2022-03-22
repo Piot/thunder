@@ -15,21 +15,17 @@ endif()
 
 include_directories(include)
 
-include_directories(../deps/basal-c/src/include)
-include_directories(../deps/clog/src/include)
-include_directories(../deps/tyran/src/include)
-include_directories(../deps/tiny-libc/src/include)
-include_directories(../deps/imprint/src/include)
-include_directories(../deps/sense/src/include)
-include_directories(../deps/breathe/src/include)
-include_directories(../deps/burst/src/include)
-include_directories(../deps/latch/src/include)
-include_directories(../deps/scenery/src/include)
-include_directories(../deps/lightning/src/include)
-include_directories(../deps/swamp-runtime/src/include)
-include_directories(../deps/swamp-script-scope/src/include)
-include_directories(../deps/swamp-unpack-c/src/include)
-include_directories(../deps/turmoil-resource/src/include)
+include_directories(../deps/piot/basal-c/src/include)
+include_directories(../deps/piot/clog/src/include)
+include_directories(../deps/piot/tiny-libc/src/include)
+include_directories(../deps/piot/imprint/src/include)
+include_directories(../deps/piot/sense/src/include)
+include_directories(../deps/piot/breathe/src/include)
+include_directories(../deps/piot/burst/src/include)
+include_directories(../deps/piot/latch/src/include)
+include_directories(../deps/piot/scenery/src/include)
+include_directories(../deps/piot/lightning/src/include)
+include_directories(../deps/piot/turmoil-resource/src/include)
 
 file(GLOB_RECURSE deps_src FOLLOW_SYMLINKS
         "../deps/*/src/*.c"
@@ -38,12 +34,12 @@ file(GLOB_RECURSE deps_src FOLLOW_SYMLINKS
 # Remove iOS and SDL (including Webassembly)
 list(FILTER deps_src EXCLUDE REGEX ".*sdl_main.c" )
 list(FILTER deps_src EXCLUDE REGEX ".*webassembly/main.c" )
-list(FILTER deps_src EXCLUDE REGEX ".*src/examples/main.c" )
-list(FILTER deps_src EXCLUDE REGEX ".*src/example/main.c" )
-list(FILTER deps_src EXCLUDE REGEX ".*src/platform/ios/.*" )
-list(FILTER deps_src EXCLUDE REGEX ".*src/platform/posix/.*" )
-list(FILTER deps_src EXCLUDE REGEX ".*src/platform/webassembly/.*" )
-list(FILTER deps_src EXCLUDE REGEX ".*src/platform/sdl/.*" )
+list(FILTER deps_src EXCLUDE REGEX ".*/*/src/examples/main.c" )
+list(FILTER deps_src EXCLUDE REGEX ".*/*/src/example/main.c" )
+list(FILTER deps_src EXCLUDE REGEX ".*/*/src/platform/ios/.*" )
+list(FILTER deps_src EXCLUDE REGEX ".*/*/src/platform/posix/.*" )
+list(FILTER deps_src EXCLUDE REGEX ".*/*/src/platform/webassembly/.*" )
+list(FILTER deps_src EXCLUDE REGEX ".*/*/src/platform/sdl/.*" )
 
 
 
@@ -69,7 +65,7 @@ endif()
 add_executable(thunder_example
         ${deps_src}
         ${lib_src}
-        ../deps/burst/src/platform/posix/burst_file_loader_posix.c
+        ../deps/piot/burst/src/platform/posix/burst_file_loader_posix.c
         example/app.c
         )
 
