@@ -2,4 +2,5 @@ target/
 external/
 .vscode/
 deps*/
+.DS_Store
 
