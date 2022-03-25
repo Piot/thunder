@@ -24,11 +24,10 @@ SOFTWARE.
 
 */
 #include <clog/clog.h>
-#include <thunder/sound_buffer.h>
-#include <thunder/sound_driver.h>
+#include <stdbool.h>
 #include <thunder/platform/ios/sound_driver.h>
 #include <thunder/sound_buffer.h>
-#include <stdbool.h>
+#include <thunder/sound_driver.h>
 
 #include <stdint.h>
 
@@ -49,7 +48,8 @@ static void fill_buffer_callback(void* _self, AudioQueueRef queue, AudioQueueBuf
 
     int packet_count = 0;
     AudioStreamPacketDescription* packet_descriptions = 0;
-    AudioQueueEnqueueBuffer(queue, buffer, packet_count, packet_descriptions);
+    int enqueueResult = AudioQueueEnqueueBuffer(queue, buffer, packet_count, packet_descriptions);
+    CLOG_ASSERT(enqueueResult == 0, "AudioQueueEnqueueBuffer failed")
 }
 
 static void create_and_fill_buffers(thunder_sound_driver* self)
@@ -59,7 +59,7 @@ static void create_and_fill_buffers(thunder_sound_driver* self)
 
     for (int i = 0; i < buffer_count; ++i) {
         int err = AudioQueueAllocateBuffer(self->zQueue, audio_buffer_size, &buffers[i]);
-        CLOG_ASSERT(err == 0, "Couldn't allocate buffer");
+        CLOG_ASSERT(err == 0, "Couldn't allocate buffer")
         fill_buffer_callback(self, self->zQueue, buffers[i]);
     }
 }
@@ -73,6 +73,9 @@ static void start_playback(thunder_sound_driver* self)
 static void open_output(thunder_sound_driver* self, float sample_rate)
 {
     AudioStreamBasicDescription zFormat;
+
+    tc_mem_clear_type(&zFormat);
+
     zFormat.mSampleRate = sample_rate;
     zFormat.mFormatID = kAudioFormatLinearPCM;
     zFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
@@ -81,7 +84,6 @@ static void open_output(thunder_sound_driver* self, float sample_rate)
     zFormat.mBytesPerFrame = zFormat.mChannelsPerFrame * sizeof(thunder_sample_output_s16);
     zFormat.mBitsPerChannel = sizeof(thunder_sample_output_s16) * 8;
     zFormat.mBytesPerPacket = zFormat.mBytesPerFrame * zFormat.mFramesPerPacket;
-    zFormat.mReserved = 0;
 
     UInt32 err = AudioQueueNewOutput(&zFormat, fill_buffer_callback, self, 0, kCFRunLoopCommonModes, 0, &self->zQueue);
     CLOG_ASSERT(err == 0, "AudioQueueNewOutput err:%d", (unsigned int) err);
