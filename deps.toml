@@ -7,6 +7,10 @@ version = "0.0.0"
 name = 'piot/imprint'
 version = "*"
 
+[[dependencies]]
+name = 'piot/basal-c'
+version = "*"
+
 [[development]]
 name = 'piot/breathe'
 version = "*"
