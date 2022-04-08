@@ -30,9 +30,9 @@ SOFTWARE.
 
 #include "sdl_sound_driver.h"
 
-typedef struct thunder_sound_driver {
+typedef struct ThunderSoundDriver {
     thunder_sdl_sound_driver sdl_driver;
-} thunder_sound_driver;
+} ThunderSoundDriver;
 
 #endif
 

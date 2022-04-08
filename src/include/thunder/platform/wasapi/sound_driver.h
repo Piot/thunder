@@ -3,8 +3,8 @@
 
 #include "../wasapi/wasapi_sound_driver.h"
 
-typedef struct thunder_sound_driver {
+typedef struct ThunderSoundDriver {
     thunder_wasapi_sound_driver wasapi_driver;
-} thunder_sound_driver;
+} ThunderSoundDriver;
 
 #endif

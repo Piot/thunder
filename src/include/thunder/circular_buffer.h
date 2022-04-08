@@ -31,7 +31,7 @@ SOFTWARE.
 
 typedef struct ThunderAudioCircularBuffer {
     int max_size;
-    thunder_sample_output_s16* buffer;
+    ThunderSampleOutputS16* buffer;
     int read_buffer_samples_left;
     int write_index;
     int read_index;
@@ -41,8 +41,8 @@ typedef struct ThunderAudioCircularBuffer {
 void thunderAudioCircularBufferInit(ThunderAudioCircularBuffer* self, size_t maxSize);
 void thunderAudioCircularBufferDestroy(ThunderAudioCircularBuffer* self);
 int thunderAudioCircularBufferReadAvailable(const ThunderAudioCircularBuffer* self);
-void thunderAudioCircularBufferWrite(ThunderAudioCircularBuffer* self, const thunder_sample* data,
+void thunderAudioCircularBufferWrite(ThunderAudioCircularBuffer* self, const ThunderSample* data,
                                      size_t sampleCountInTarget);
-void thunderAudioCircularBufferRead(ThunderAudioCircularBuffer* self, thunder_sample* output, size_t requiredCount);
+void thunderAudioCircularBufferRead(ThunderAudioCircularBuffer* self, ThunderSample* output, size_t requiredCount);
 
 #endif

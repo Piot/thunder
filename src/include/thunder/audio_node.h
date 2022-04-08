@@ -29,17 +29,17 @@ SOFTWARE.
 #include <thunder/sound_types.h>
 #include <stdbool.h>
 
-typedef void (*thunder_audio_node_output_func)(void* self, thunder_sample* sample, int sample_count);
+typedef void (*ThunderAudioNodeOutputFunc)(void* self, ThunderSample* sample, int sample_count);
 
-typedef struct thunder_audio_node {
-    thunder_audio_node_output_func output;
+typedef struct ThunderAudioNode {
+    ThunderAudioNodeOutputFunc output;
     void* _self;
     bool is_playing;
     int channel_count;
     int pan;
     float volume;
-} thunder_audio_node;
+} ThunderAudioNode;
 
-void thunder_audio_node_init(thunder_audio_node* self, thunder_audio_node_output_func func, void* user_data);
+void thunder_audio_node_init(ThunderAudioNode* self, ThunderAudioNodeOutputFunc func, void* user_data);
 
 #endif

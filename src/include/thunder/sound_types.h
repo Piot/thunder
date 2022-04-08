@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
-typedef int16_t thunder_sample_output_s16;
-typedef int16_t thunder_sample;
-typedef int32_t thunder_mix_sample;
+typedef int16_t ThunderSampleOutputS16;
+typedef int16_t ThunderSample;
+typedef int32_t ThunderMixSample;
 
 #endif

@@ -39,7 +39,7 @@ typedef struct thunder_xaudio2_sound_driver {
     struct IXAudio2* xaudio2;
     struct IXAudio2MasteringVoice* masteringVoice;
     struct IXAudio2SourceVoice* sourceVoice;
-    thunder_sample_output_s16* buffers[2];
+    ThunderSampleOutputS16* buffers[2];
     int bufferAtomSizeInOctets;
     int bufferAtomSizeInBlocks;
     int activeBuffer;

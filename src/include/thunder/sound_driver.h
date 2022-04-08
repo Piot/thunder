@@ -42,8 +42,8 @@ SOFTWARE.
 
 struct thunder_sound_buffer;
 
-int thunder_sound_driver_init(thunder_sound_driver* self, struct thunder_audio_buffer* buffer);
-void thunder_sound_driver_free(thunder_sound_driver* self);
-void thunder_sound_driver_update(thunder_sound_driver* self);
+int thunder_sound_driver_init(ThunderSoundDriver* self, struct thunder_audio_buffer* buffer);
+void thunder_sound_driver_free(ThunderSoundDriver* self);
+void thunder_sound_driver_update(ThunderSoundDriver* self);
 
 #endif

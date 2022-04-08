@@ -33,7 +33,7 @@ SOFTWARE.
 struct ImprintMemory;
 struct thunder_audio_node_player;
 
-typedef struct thunder_sound_module_sound {
+typedef struct ThunderSoundModuleSound {
     bool is_used;
     bool should_play;
     bool waiting_for_play;
@@ -41,27 +41,27 @@ typedef struct thunder_sound_module_sound {
     float volume;
     float pan;
     int loop;
-    struct thunder_sound_module_sound* sync_with_sound;
-    struct thunder_audio_compositor_node* node;
-} thunder_sound_module_sound;
+    struct ThunderSoundModuleSound* sync_with_sound;
+    struct ThunderAudioCompositorNode* node;
+} ThunderSoundModuleSound;
 
-typedef struct thunder_sound_module {
-    thunder_sound_driver driver;
+typedef struct ThunderSoundModule {
+    ThunderSoundDriver driver;
     struct ImprintMemory* memory;
-    thunder_audio_compositor compositor;
+    ThunderAudioCompositor compositor;
     bool initialized;
-} thunder_sound_module;
+} ThunderSoundModule;
 
-int thunder_sound_module_init(thunder_sound_module* _self, struct ImprintMemory* memory);
+int thunderSoundModuleInit(ThunderSoundModule* _self, struct ImprintMemory* memory);
+int thunderSoundModuleDestroy(ThunderSoundModule* _self);
+void thunderSoundModuleUpdate(ThunderSoundModule* _self);
 
-void thunder_sound_module_update(thunder_sound_module* _self);
-
-void thunder_sound_module_play_sound(thunder_sound_module* self, int sound_id, int wave_id, float volume,
+void thunderSoundModulePlaySound(ThunderSoundModule* self, int sound_id, int wave_id, float volume,
                                      int loop, bool should_play);
 
-void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct ImprintMemory* memory);
+void thunderSoundModuleDebugSineWave(ThunderSoundModule* self, struct ImprintMemory* memory);
 
-void thunder_sound_module_add_node(thunder_sound_module* self, struct thunder_audio_node node);
-void thunder_sound_module_reload(thunder_sound_module* self);
+void thunderSoundModuleAddNode(ThunderSoundModule* self, struct ThunderAudioNode node);
+void thunderSoundModuleReload(ThunderSoundModule* self);
 
 #endif

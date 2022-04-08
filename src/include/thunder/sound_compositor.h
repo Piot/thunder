@@ -30,24 +30,24 @@ SOFTWARE.
 #include <thunder/sound_types.h>
 
 struct ImprintMemory;
-struct thunder_audio_node;
+struct ThunderAudioNode;
 
-typedef struct thunder_audio_compositor {
-    struct thunder_audio_node* nodes;
+typedef struct ThunderAudioCompositor {
+    struct ThunderAudioNode* nodes;
     int nodes_max_count;
     int nodes_count;
     float mix_down_volume;
     thunder_audio_buffer buffer;
-    thunder_mix_sample* output;
-    thunder_sample* output_16_bit;
-} thunder_audio_compositor;
+    ThunderMixSample* output;
+    ThunderSample* output_16_bit;
+} ThunderAudioCompositor;
 
-void thunder_audio_compositor_init(thunder_audio_compositor* self, struct ImprintMemory* memory);
+void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintMemory* memory);
 
-void thunder_audio_compositor_update(thunder_audio_compositor* self);
+void thunder_audio_compositor_update(ThunderAudioCompositor* self);
 
-void thunder_audio_compositor_reload(thunder_audio_compositor* self);
+void thunder_audio_compositor_reload(ThunderAudioCompositor* self);
 
-void thunder_audio_compositor_free(thunder_audio_compositor* self);
+void thunder_audio_compositor_free(ThunderAudioCompositor* self);
 
 #endif
