@@ -40,7 +40,7 @@ typedef struct debug_sine {
     float offset;
 } debug_sine;
 
-static void generate_sine(void* _self, thunder_sample* output, int sample_count)
+static void generate_sine(void* _self, ThunderSample* output, int sample_count)
 {
     // printf("sine:%d\n", sample_count);
     debug_sine* self = _self;
@@ -58,9 +58,9 @@ static void generate_sine(void* _self, thunder_sample* output, int sample_count)
     }
 }
 
-static thunder_audio_node make_sine_node(uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
+static ThunderAudioNode make_sine_node(uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
 {
-    thunder_audio_node self;
+    ThunderAudioNode self;
     debug_sine* data = tc_malloc_type(debug_sine);
 
     self.output = generate_sine;
@@ -79,15 +79,15 @@ static thunder_audio_node make_sine_node(uint64_t offset, uint64_t factor, uint6
     return self;
 }
 
-static void add_sine(thunder_sound_module* self, uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
+static void add_sine(ThunderSoundModule* self, uint64_t offset, uint64_t factor, uint64_t amplitudeFactor)
 {
     (void) offset;
 
-    thunder_audio_node node = make_sine_node(offset, factor, amplitudeFactor);
-    thunder_sound_module_add_node(self, node);
+    ThunderAudioNode node = make_sine_node(offset, factor, amplitudeFactor);
+    thunderSoundModuleAddNode(self, node);
 }
 
-void thunder_sound_module_debug_sine_wave(thunder_sound_module* self, struct ImprintMemory* memory)
+void thunderSoundModuleDebugSineWave(ThunderSoundModule* self, struct ImprintMemory* memory)
 {
     (void) memory;
 

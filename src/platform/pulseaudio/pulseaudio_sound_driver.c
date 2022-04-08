@@ -41,7 +41,7 @@ static void writeCallback(pa_stream* stream, size_t octetLength, void* userdata)
 {
     thunder_pulseaudio_sound_driver* self = (thunder_pulseaudio_sound_driver*) userdata;
 
-    int combinedSampleOctets = sizeof(thunder_sample_output_s16);
+    int combinedSampleOctets = sizeof(ThunderSampleOutputS16);
 
     int requiredSampleCount = octetLength / combinedSampleOctets;
 
@@ -49,7 +49,7 @@ static void writeCallback(pa_stream* stream, size_t octetLength, void* userdata)
 
 #define bufferLength (48000)
 
-    thunder_sample_output_s16 buffer[bufferLength];
+    ThunderSampleOutputS16 buffer[bufferLength];
 
     int convertedOctetCount = requiredSampleCount * combinedSampleOctets;
 
@@ -101,6 +101,9 @@ static void stateCallback(pa_context* c, void* userdata)
             break;
         case PA_CONTEXT_CONNECTING:
             connectingCallback(self);
+        case PA_CONTEXT_TERMINATED:
+            CLOG_DEBUG("pulse audio state: terminating")
+            break;
         default:
             CLOG_DEBUG("unknown pulse audio state: %d", state);
             break;
@@ -146,5 +149,8 @@ int thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, 
 
 void thunder_pulseaudio_sound_driver_free(thunder_pulseaudio_sound_driver* self)
 {
-
+    CLOG_DEBUG("pulseaudio: closing")
+    pa_threaded_mainloop_stop(self->mainloop);
+    pa_context_disconnect(self->context);
+    pa_threaded_mainloop_free(self->mainloop);
 }

@@ -27,7 +27,7 @@ SOFTWARE.
 #include <imprint/memory.h>
 #include <thunder/sound_buffer.h>
 
-void thunder_audio_buffer_write(thunder_audio_buffer* self, const thunder_sample* samples, int sample_count)
+void thunder_audio_buffer_write(thunder_audio_buffer* self, const ThunderSample* samples, int sample_count)
 {
     CLOG_ASSERT(self->atom_size == sample_count, "Wrong store size:%d", sample_count);
 
@@ -37,9 +37,9 @@ void thunder_audio_buffer_write(thunder_audio_buffer* self, const thunder_sample
 
     int index = self->write_index;
 
-    thunder_sample_output_s16* buffer = self->buffers[index];
+    ThunderSampleOutputS16* buffer = self->buffers[index];
 
-    tc_memcpy_octets(buffer, samples, sample_count * sizeof(thunder_sample));
+    tc_memcpy_octets(buffer, samples, sample_count * sizeof(ThunderSample));
 
     if (!self->read_buffer) {
         self->read_buffer = self->buffers[0];
@@ -50,21 +50,21 @@ void thunder_audio_buffer_write(thunder_audio_buffer* self, const thunder_sample
     self->write_index %= self->buffer_count;
 }
 
-// NOTE: IMPORTANT: You can not allocate memory or use mutex when reading!
-void thunder_audio_buffer_read(thunder_audio_buffer* self, thunder_sample_output_s16* output, int sample_count)
+// NOTE: IMPORTANT: You can not allocate mewmory or use mutex when reading!
+void thunder_audio_buffer_read(thunder_audio_buffer* self, ThunderSampleOutputS16* output, int sample_count)
 {
     int samples_to_read = sample_count;
 
     if (samples_to_read > self->read_buffer_samples_left) {
         samples_to_read = self->read_buffer_samples_left;
     }
-    tc_memcpy_type(thunder_sample_output_s16, output, self->read_buffer, samples_to_read);
+    tc_memcpy_type(ThunderSampleOutputS16, output, self->read_buffer, samples_to_read);
     sample_count -= samples_to_read;
     self->read_buffer_samples_left -= samples_to_read;
 
     if (self->read_buffer_samples_left == 0) {
         if (self->write_index == self->read_index) {
-            thunder_sample_output_s16* zero = output + samples_to_read;
+            ThunderSampleOutputS16* zero = output + samples_to_read;
             tc_mem_clear_type_n(zero, sample_count);
             return;
         }
@@ -87,9 +87,9 @@ void thunder_audio_buffer_init(thunder_audio_buffer* self, ImprintMemory* memory
     self->atom_size = atom_size;
     self->read_index = -1;
     self->write_index = 0;
-    self->buffers = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample_output_s16*, self->buffer_count);
+    self->buffers = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, ThunderSampleOutputS16*, self->buffer_count);
     for (int i = 0; i < self->buffer_count; ++i) {
-        self->buffers[i] = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample_output_s16, atom_size);
+        self->buffers[i] = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, ThunderSampleOutputS16, atom_size);
     }
     self->read_buffer = 0;
     self->read_buffer_samples_left = 0;

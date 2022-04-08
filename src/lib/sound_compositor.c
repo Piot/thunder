@@ -32,7 +32,7 @@ SOFTWARE.
 #define THUNDER_ATOM_SAMPLE_COUNT (3200)
 #define THUNDER_ATOM_COUNT_BUFFER (4)
 
-static void mix_down_using_volume(thunder_mix_sample* source, int size, float mix_down_volume, thunder_sample* target)
+static void mix_down_using_volume(ThunderMixSample* source, int size, float mix_down_volume, ThunderSample* target)
 {
     const int DIVISOR = 8;
     CLOG_ASSERT((THUNDER_ATOM_SAMPLE_COUNT % DIVISOR) == 0, "Illegal divisor");
@@ -56,11 +56,11 @@ static void mix_down_using_volume(thunder_mix_sample* source, int size, float mi
     }
 }
 
-static thunder_mix_sample maximum_amplitude(const thunder_mix_sample* target, int size)
+static ThunderMixSample maximum_amplitude(const ThunderMixSample* target, int size)
 {
-    thunder_mix_sample maximum_amplitude_found = 0;
-    thunder_mix_sample minimum_amplitude_found = 0;
-    thunder_mix_sample v;
+    ThunderMixSample maximum_amplitude_found = 0;
+    ThunderMixSample minimum_amplitude_found = 0;
+    ThunderMixSample v;
 
     for (int i = 0; i < size; ++i) {
         v = *target++;
@@ -72,13 +72,13 @@ static thunder_mix_sample maximum_amplitude(const thunder_mix_sample* target, in
         }
     }
 
-    thunder_mix_sample max_amplitude = (-minimum_amplitude_found > maximum_amplitude_found) ? -minimum_amplitude_found
+    ThunderMixSample max_amplitude = (-minimum_amplitude_found > maximum_amplitude_found) ? -minimum_amplitude_found
                                                                                             : maximum_amplitude_found;
 
     return max_amplitude;
 }
 
-static void adjust_mix_down_volume(thunder_audio_compositor* self, thunder_mix_sample maximum_amplitude_found)
+static void adjust_mix_down_volume(ThunderAudioCompositor* self, ThunderMixSample maximum_amplitude_found)
 {
     float maximum_amplitude_as_factor = (float) maximum_amplitude_found / 32767.0f;
     if (maximum_amplitude_found <= 0.01f) {
@@ -102,12 +102,12 @@ static void adjust_mix_down_volume(thunder_audio_compositor* self, thunder_mix_s
     }
 }
 
-static void add_to_output(thunder_mix_sample* output, int channel, int number_of_channels,
-                          const thunder_sample* source_sample, float volume)
+static void add_to_output(ThunderMixSample* output, int channel, int number_of_channels,
+                          const ThunderSample* source_sample, float volume)
 {
-    thunder_mix_sample* target = output + channel;
-    thunder_mix_sample* end = output + THUNDER_ATOM_SAMPLE_COUNT; // - channel;
-    const thunder_sample* source = source_sample;
+    ThunderMixSample* target = output + channel;
+    ThunderMixSample* end = output + THUNDER_ATOM_SAMPLE_COUNT; // - channel;
+    const ThunderSample* source = source_sample;
 
     while (target < end) {
         *target += *source++ * volume;
@@ -129,18 +129,18 @@ static void add_to_output(thunder_mix_sample* output, int channel, int number_of
     }
 }
 
-static void enumerate_nodes(thunder_audio_compositor* self)
+static void enumerate_nodes(ThunderAudioCompositor* self)
 {
-    thunder_sample source[THUNDER_ATOM_SAMPLE_COUNT];
+    ThunderSample source[THUNDER_ATOM_SAMPLE_COUNT];
 
     static const int LEFT_CHANNEL = 0;
     static const int RIGHT_CHANNEL = 1;
     static const int NUMBER_OF_OUTPUT_CHANNELS = 2;
 
-    thunder_mix_sample* output = self->output;
+    ThunderMixSample* output = self->output;
 
     for (int i = 0; i < self->nodes_count; ++i) {
-        thunder_audio_node* node = &self->nodes[i];
+        ThunderAudioNode* node = &self->nodes[i];
 
         if (node->is_playing) {
             if (node->channel_count == 2) {
@@ -157,21 +157,21 @@ static void enumerate_nodes(thunder_audio_compositor* self)
     }
 }
 
-static void compress_to_16_bit(thunder_audio_compositor* self, thunder_sample* output)
+static void compress_to_16_bit(ThunderAudioCompositor* self, ThunderSample* output)
 {
-    thunder_mix_sample max_amplitude = maximum_amplitude(self->output, THUNDER_ATOM_SAMPLE_COUNT);
+    ThunderMixSample max_amplitude = maximum_amplitude(self->output, THUNDER_ATOM_SAMPLE_COUNT);
 
     adjust_mix_down_volume(self, max_amplitude);
     self->mix_down_volume = 1.0f;
     mix_down_using_volume(self->output, THUNDER_ATOM_SAMPLE_COUNT, self->mix_down_volume, output);
 }
 
-static void clear_buffer(thunder_mix_sample* output)
+static void clear_buffer(ThunderMixSample* output)
 {
     tc_mem_clear_type_n(output, THUNDER_ATOM_SAMPLE_COUNT);
 }
 
-void thunder_audio_compositor_update(thunder_audio_compositor* self)
+void thunder_audio_compositor_update(ThunderAudioCompositor* self)
 {
     clear_buffer(self->output);
     enumerate_nodes(self);
@@ -179,10 +179,10 @@ void thunder_audio_compositor_update(thunder_audio_compositor* self)
     thunder_audio_buffer_write(&self->buffer, self->output_16_bit, THUNDER_ATOM_SAMPLE_COUNT);
 }
 
-void thunder_audio_compositor_reload(thunder_audio_compositor* self)
+void thunder_audio_compositor_reload(ThunderAudioCompositor* self)
 {
     for (size_t i = 0; i < self->nodes_max_count; ++i) {
-        thunder_audio_node* node = &self->nodes[i];
+        ThunderAudioNode* node = &self->nodes[i];
         node->is_playing = 0;
         node->output = 0;
     }
@@ -190,12 +190,12 @@ void thunder_audio_compositor_reload(thunder_audio_compositor* self)
     self->nodes_count = 0;
 }
 
-void thunder_audio_compositor_init(thunder_audio_compositor* self, struct ImprintMemory* memory)
+void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintMemory* memory)
 {
-    self->output = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_mix_sample, THUNDER_ATOM_SAMPLE_COUNT);
-    self->output_16_bit = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_sample, THUNDER_ATOM_SAMPLE_COUNT);
+    self->output = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, ThunderMixSample, THUNDER_ATOM_SAMPLE_COUNT);
+    self->output_16_bit = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, ThunderSample, THUNDER_ATOM_SAMPLE_COUNT);
     self->nodes_max_count = 10;
-    self->nodes = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, thunder_audio_node, self->nodes_max_count);
+    self->nodes = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, ThunderAudioNode, self->nodes_max_count);
     for (int i = 0; i < self->nodes_max_count; ++i) {
         self->nodes[i]._self = 0;
         self->nodes[i].output = 0;
@@ -206,7 +206,7 @@ void thunder_audio_compositor_init(thunder_audio_compositor* self, struct Imprin
     self->mix_down_volume = 1;
 }
 
-void thunder_audio_compositor_free(thunder_audio_compositor* self)
+void thunder_audio_compositor_free(ThunderAudioCompositor* self)
 {
     tc_free(self->output);
     tc_free(self->nodes);

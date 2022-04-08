@@ -28,9 +28,9 @@ SOFTWARE.
 #include <thunder/sound_compositor.h>
 #include <thunder/sound_module.h>
 
-void thunder_sound_module_update(thunder_sound_module* _self)
+void thunderSoundModuleUpdate(ThunderSoundModule* _self)
 {
-    thunder_sound_module* self = _self;
+    ThunderSoundModule* self = _self;
 
     int atomsFull = thunder_audio_buffer_atoms_full(&self->compositor.buffer);
     if (atomsFull >= 2) {
@@ -44,17 +44,17 @@ void thunder_sound_module_update(thunder_sound_module* _self)
 
 }
 
-void thunder_sound_module_add_node(thunder_sound_module* self, thunder_audio_node node)
+void thunderSoundModuleAddNode(ThunderSoundModule* self, ThunderAudioNode node)
 {
     self->compositor.nodes[self->compositor.nodes_count++] = node;
 }
 
-void thunder_sound_module_reload(thunder_sound_module* self)
+void thunderSoundModuleReload(ThunderSoundModule* self)
 {
     thunder_audio_compositor_reload(&self->compositor);
 }
 
-int thunder_sound_module_init(thunder_sound_module* self, struct ImprintMemory* memory)
+int thunderSoundModuleInit(ThunderSoundModule* self, struct ImprintMemory* memory)
 {
     self->memory = memory;
 
@@ -68,6 +68,13 @@ int thunder_sound_module_init(thunder_sound_module* self, struct ImprintMemory* 
         return err;
     }
     self->initialized = true;
+
+    return 0;
+}
+
+int thunderSoundModuleDestroy(ThunderSoundModule* self)
+{
+    thunder_sound_driver_free(&self->driver);
 
     return 0;
 }
