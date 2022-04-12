@@ -42,7 +42,7 @@ typedef struct ThunderAudioCompositor {
     ThunderSample* output_16_bit;
 } ThunderAudioCompositor;
 
-void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintMemory* memory);
+void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintAllocator* memory);
 
 void thunder_audio_compositor_update(ThunderAudioCompositor* self);
 

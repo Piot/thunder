@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "sound_types.h"
 
-struct ImprintMemory;
+struct ImprintAllocator;
 
 typedef struct thunder_audio_buffer {
     int atom_size;
@@ -44,7 +44,7 @@ void thunder_audio_buffer_write(thunder_audio_buffer* self, const ThunderSample*
 
 void thunder_audio_buffer_read(thunder_audio_buffer* self, ThunderSampleOutputS16* output, int sample_count);
 
-void thunder_audio_buffer_init(thunder_audio_buffer* self, struct ImprintMemory* memory, int atom_count,
+void thunder_audio_buffer_init(thunder_audio_buffer* self, struct ImprintAllocator* memory, int atom_count,
                                int atom_size);
 
 void thunder_audio_buffer_free(thunder_audio_buffer* self);

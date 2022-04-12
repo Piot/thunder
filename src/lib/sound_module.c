@@ -54,10 +54,8 @@ void thunderSoundModuleReload(ThunderSoundModule* self)
     thunder_audio_compositor_reload(&self->compositor);
 }
 
-int thunderSoundModuleInit(ThunderSoundModule* self, struct ImprintMemory* memory)
+int thunderSoundModuleInit(ThunderSoundModule* self, struct ImprintAllocator* memory)
 {
-    self->memory = memory;
-
     thunder_audio_compositor_init(&self->compositor, memory);
 
     thunder_audio_compositor_update(&self->compositor);

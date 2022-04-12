@@ -24,6 +24,7 @@ SOFTWARE.
 
 */
 #include <clog/clog.h>
+#include <imprint/allocator.h>
 #include <imprint/memory.h>
 #include <thunder/audio_node.h>
 #include <thunder/sound_buffer.h>
@@ -190,12 +191,12 @@ void thunder_audio_compositor_reload(ThunderAudioCompositor* self)
     self->nodes_count = 0;
 }
 
-void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintMemory* memory)
+void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintAllocator* memory)
 {
-    self->output = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, ThunderMixSample, THUNDER_ATOM_SAMPLE_COUNT);
-    self->output_16_bit = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, ThunderSample, THUNDER_ATOM_SAMPLE_COUNT);
+    self->output = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderMixSample, THUNDER_ATOM_SAMPLE_COUNT);
+    self->output_16_bit = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSample, THUNDER_ATOM_SAMPLE_COUNT);
     self->nodes_max_count = 10;
-    self->nodes = IMPRINT_MEMORY_CALLOC_TYPE_COUNT(memory, ThunderAudioNode, self->nodes_max_count);
+    self->nodes = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderAudioNode, self->nodes_max_count);
     for (int i = 0; i < self->nodes_max_count; ++i) {
         self->nodes[i]._self = 0;
         self->nodes[i].output = 0;

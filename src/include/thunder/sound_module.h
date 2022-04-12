@@ -47,12 +47,11 @@ typedef struct ThunderSoundModuleSound {
 
 typedef struct ThunderSoundModule {
     ThunderSoundDriver driver;
-    struct ImprintMemory* memory;
     ThunderAudioCompositor compositor;
     bool initialized;
 } ThunderSoundModule;
 
-int thunderSoundModuleInit(ThunderSoundModule* _self, struct ImprintMemory* memory);
+int thunderSoundModuleInit(ThunderSoundModule* _self, struct ImprintAllocator* memory);
 int thunderSoundModuleDestroy(ThunderSoundModule* _self);
 void thunderSoundModuleUpdate(ThunderSoundModule* _self);
 
