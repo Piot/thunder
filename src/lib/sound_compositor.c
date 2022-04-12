@@ -25,7 +25,6 @@ SOFTWARE.
 */
 #include <clog/clog.h>
 #include <imprint/allocator.h>
-#include <imprint/memory.h>
 #include <thunder/audio_node.h>
 #include <thunder/sound_buffer.h>
 #include <thunder/sound_compositor.h>
