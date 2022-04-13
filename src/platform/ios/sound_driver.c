@@ -35,15 +35,15 @@ const static int audio_buffer_size = 2 * 1024;
 
 static void fill_buffer_callback(void* _self, AudioQueueRef queue, AudioQueueBufferRef buffer)
 {
-    thunder_sound_driver* self = _self;
+    ThunderSoundDriver * self = _self;
     thunder_audio_buffer* sound_buffer = self->buffer;
 
     buffer->mAudioDataByteSize = buffer->mAudioDataBytesCapacity;
     if ((buffer->mAudioDataBytesCapacity % 4) != 0) {
         CLOG_WARN("ERROR!!!!!");
     }
-    UInt32 sample_count = buffer->mAudioDataByteSize / sizeof(thunder_sample_output_s16);
-    thunder_sample_output_s16* target = (thunder_sample_output_s16*) buffer->mAudioData;
+    UInt32 sample_count = buffer->mAudioDataByteSize / sizeof(ThunderSampleOutputS16);
+    ThunderSampleOutputS16 * target = (ThunderSampleOutputS16*) buffer->mAudioData;
     thunder_audio_buffer_read(sound_buffer, target, sample_count);
 
     int packet_count = 0;
@@ -52,7 +52,7 @@ static void fill_buffer_callback(void* _self, AudioQueueRef queue, AudioQueueBuf
     CLOG_ASSERT(enqueueResult == 0, "AudioQueueEnqueueBuffer failed")
 }
 
-static void create_and_fill_buffers(thunder_sound_driver* self)
+static void create_and_fill_buffers(ThunderSoundDriver* self)
 {
     const int buffer_count = 4;
     AudioQueueBufferRef buffers[4];
@@ -64,13 +64,13 @@ static void create_and_fill_buffers(thunder_sound_driver* self)
     }
 }
 
-static void start_playback(thunder_sound_driver* self)
+static void start_playback(ThunderSoundDriver* self)
 {
     UInt32 err = AudioQueueStart(self->zQueue, 0);
     CLOG_ASSERT(err == 0, "Audio queue start failed");
 }
 
-static void open_output(thunder_sound_driver* self, float sample_rate)
+static void open_output(ThunderSoundDriver* self, float sample_rate)
 {
     AudioStreamBasicDescription zFormat;
 
@@ -81,15 +81,15 @@ static void open_output(thunder_sound_driver* self, float sample_rate)
     zFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
     zFormat.mChannelsPerFrame = 2;
     zFormat.mFramesPerPacket = 1;
-    zFormat.mBytesPerFrame = zFormat.mChannelsPerFrame * sizeof(thunder_sample_output_s16);
-    zFormat.mBitsPerChannel = sizeof(thunder_sample_output_s16) * 8;
+    zFormat.mBytesPerFrame = zFormat.mChannelsPerFrame * sizeof(ThunderSampleOutputS16);
+    zFormat.mBitsPerChannel = sizeof(ThunderSampleOutputS16) * 8;
     zFormat.mBytesPerPacket = zFormat.mBytesPerFrame * zFormat.mFramesPerPacket;
 
     UInt32 err = AudioQueueNewOutput(&zFormat, fill_buffer_callback, self, 0, kCFRunLoopCommonModes, 0, &self->zQueue);
     CLOG_ASSERT(err == 0, "AudioQueueNewOutput err:%d", (unsigned int) err);
 }
 
-int thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
+int thunder_sound_driver_init(ThunderSoundDriver * self, thunder_audio_buffer* buffer)
 {
     self->buffer = buffer;
     open_output(self, 48000.0f);
@@ -99,6 +99,6 @@ int thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* 
     return 0;
 }
 
-void thunder_sound_driver_free(thunder_sound_driver* self)
+void thunder_sound_driver_free(ThunderSoundDriver * self)
 {
 }
