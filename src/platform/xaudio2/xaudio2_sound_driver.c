@@ -10,7 +10,7 @@
 
 typedef struct thunder_xaudio2_callback {
     IXAudio2VoiceCallback IXAudio2VoiceCallback_iface;
-    thunder_xaudio2_sound_driver* self;
+    ThunderXaudio2SoundDriver* self;
 } thunder_xaudio2_callback;
 
 #define CHECKFAILED(hr)                                                                                                \
@@ -109,13 +109,13 @@ static void setupStereoFormat(WAVEFORMATEXTENSIBLE* proposedFormat, UINT32 frequ
 
 static void WINAPI onVoiceProcessingPassStart(IXAudio2VoiceCallback* iface, UINT32 BytesRequired)
 {
-    thunder_xaudio2_sound_driver* self = ((thunder_xaudio2_callback*) iface)->self;
+    ThunderXaudio2SoundDriver* self = ((thunder_xaudio2_callback*) iface)->self;
 
 }
 
 static void WINAPI onVoiceProcessingPassEnd(IXAudio2VoiceCallback* iface)
 {
-    thunder_xaudio2_sound_driver* self = ((thunder_xaudio2_callback*) iface)->self;
+    ThunderXaudio2SoundDriver* self = ((thunder_xaudio2_callback*) iface)->self;
 
 }
 
@@ -132,7 +132,7 @@ static void WINAPI onBufferStart(IXAudio2VoiceCallback* iface, void* pBufferCont
 
 static void WINAPI onBufferEnd(IXAudio2VoiceCallback* iface, void* pBufferContext)
 {
-    thunder_xaudio2_sound_driver* self = ((thunder_xaudio2_callback*) iface)->self;
+    ThunderXaudio2SoundDriver* self = ((thunder_xaudio2_callback*) iface)->self;
 
     XAUDIO2_BUFFER xAudioBuffer2 = {0};
     BYTE* buffer = self->buffers[self->activeBuffer];
@@ -167,7 +167,7 @@ static IXAudio2VoiceCallbackVtbl vcb_vtbl = {onVoiceProcessingPassStart,
 static struct thunder_xaudio2_callback callbacks = {&vcb_vtbl};
 
 
-static int init(thunder_xaudio2_sound_driver* self)
+static int init(ThunderXaudio2SoundDriver* self)
 {
     //CHECKRETURN_HRESULT(CoInitializeEx(0, COINIT_MULTITHREADED))
     CHECKRETURN_HRESULT(CoInitialize(0))
@@ -221,7 +221,7 @@ static int init(thunder_xaudio2_sound_driver* self)
 
 uint32_t g_resampleCounter = 0;
 
-static int callback(thunder_xaudio2_sound_driver* self)
+static int callback(ThunderXaudio2SoundDriver* self)
 {
     /*
     thunder_sample_output_s16* source = tempBuffer;
@@ -239,7 +239,7 @@ static int callback(thunder_xaudio2_sound_driver* self)
     */
 }
 
-int thunder_xaudio2_sound_driver_init(thunder_xaudio2_sound_driver* self, struct thunder_audio_buffer* buffer,
+int thunderXaudio2SoundDriverInit(ThunderXaudio2SoundDriver* self, struct thunder_audio_buffer* buffer,
                                       bool use_floats)
 {
     CLOG_DEBUG("xaudio2 init");
@@ -247,7 +247,7 @@ int thunder_xaudio2_sound_driver_init(thunder_xaudio2_sound_driver* self, struct
     return init(self);
 }
 
-void thunder_xaudio2_sound_driver_free(thunder_xaudio2_sound_driver* self)
+void thunderXaudio2SoundDriverFree(ThunderXaudio2SoundDriver* self)
 {
     IXAudio2_StopEngine(self->xaudio2);
     self->xaudio2 = 0;
