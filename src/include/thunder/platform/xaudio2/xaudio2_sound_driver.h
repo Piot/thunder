@@ -24,8 +24,8 @@ SOFTWARE.
 
 */
 
-#ifndef thunder_xaudio2_sound_driver_impl_h
-#define thunder_xaudio2_sound_driver_impl_h
+#ifndef ThunderXaudio2SoundDriver_impl_h
+#define ThunderXaudio2SoundDriver_impl_h
 
 struct thunder_audio_buffer;
 struct IXAudio2;
@@ -34,7 +34,7 @@ struct IXAudio2SourceVoice;
 #include <stdbool.h>
 #include <thunder/sound_types.h>
 
-typedef struct thunder_xaudio2_sound_driver {
+typedef struct ThunderXaudio2SoundDriver {
     struct thunder_audio_buffer* buffer;
     struct IXAudio2* xaudio2;
     struct IXAudio2MasteringVoice* masteringVoice;
@@ -43,10 +43,10 @@ typedef struct thunder_xaudio2_sound_driver {
     int bufferAtomSizeInOctets;
     int bufferAtomSizeInBlocks;
     int activeBuffer;
-} thunder_xaudio2_sound_driver;
+} ThunderXaudio2SoundDriver;
 
-int thunder_xaudio2_sound_driver_init(thunder_xaudio2_sound_driver* self, struct thunder_audio_buffer* buffer,
+int thunderXaudio2SoundDriverInit(ThunderXaudio2SoundDriver* self, struct thunder_audio_buffer* buffer,
                                       bool use_floats);
-void thunder_xaudio2_sound_driver_free(thunder_xaudio2_sound_driver* self);
+void thunderXaudio2SoundDriverFree(ThunderXaudio2SoundDriver* self);
 
 #endif

@@ -4,7 +4,7 @@
 #include "../xaudio2/xaudio2_sound_driver.h"
 
 typedef struct ThunderSoundDriver {
-    thunder_xaudio2_sound_driver xaudio2_driver;
+    ThunderXaudio2SoundDriver xaudio2Driver;
 } ThunderSoundDriver;
 
 #endif

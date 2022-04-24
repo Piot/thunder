@@ -60,7 +60,7 @@ int thunderSoundModuleInit(ThunderSoundModule* self, struct ImprintAllocator* me
     thunder_audio_compositor_update(&self->compositor);
     thunder_audio_compositor_update(&self->compositor);
     thunder_audio_compositor_update(&self->compositor);
-    int err = thunder_sound_driver_init(&self->driver, &self->compositor.buffer);
+    int err = thunderSoundDriverInit(&self->driver, &self->compositor.buffer);
     if (err < 0) {
         return err;
     }
@@ -71,7 +71,7 @@ int thunderSoundModuleInit(ThunderSoundModule* self, struct ImprintAllocator* me
 
 int thunderSoundModuleDestroy(ThunderSoundModule* self)
 {
-    thunder_sound_driver_free(&self->driver);
+    thunderSoundDriverFree(&self->driver);
 
     return 0;
 }

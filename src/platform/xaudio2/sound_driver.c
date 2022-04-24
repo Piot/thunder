@@ -3,12 +3,12 @@
 #include <thunder/sound_buffer.h>
 #include <thunder/sound_driver.h>
 
-int thunder_sound_driver_init(thunder_sound_driver* self, thunder_audio_buffer* buffer)
+int thunderSoundDriverInit(ThunderSoundDriver* self, thunder_audio_buffer* buffer)
 {
-    return thunder_xaudio2_sound_driver_init(&self->xaudio2_driver, buffer, false);
+    return thunderXaudio2SoundDriverInit(&self->xaudio2Driver, buffer, false);
 }
 
-void thunder_sound_driver_free(thunder_sound_driver* self)
+void thunderSoundDriverFree(ThunderSoundDriver* self)
 {
-    thunder_xaudio2_sound_driver_free(&self->xaudio2_driver);
+    thunderXaudio2SoundDriverFree(&self->xaudio2Driver);
 }

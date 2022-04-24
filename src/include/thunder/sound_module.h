@@ -27,7 +27,6 @@ SOFTWARE.
 #define thunder_sound_module_h
 
 #include <thunder/sound_driver.h>
-
 #include <thunder/sound_compositor.h>
 
 struct ImprintMemory;
