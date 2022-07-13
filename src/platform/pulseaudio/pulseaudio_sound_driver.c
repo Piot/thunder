@@ -63,12 +63,12 @@ static void writeCallback(pa_stream* stream, size_t octetLength, void* userdata)
 
 static void connectingCallback(thunder_pulseaudio_sound_driver* self)
 {
-    CLOG_DEBUG("connecting...");
+    CLOG_OUTPUT_STDERR("connecting...");
 }
 
 static void contextReadyCallback(thunder_pulseaudio_sound_driver* self)
 {
-    CLOG_DEBUG("context ready!");
+    CLOG_OUTPUT_STDERR("context ready!");
     pa_stream* stream;
     const char* streamName = "Turmoil Sound";
 
@@ -102,10 +102,10 @@ static void stateCallback(pa_context* c, void* userdata)
         case PA_CONTEXT_CONNECTING:
             connectingCallback(self);
         case PA_CONTEXT_TERMINATED:
-            CLOG_DEBUG("pulse audio state: terminating")
+            CLOG_OUTPUT_STDERR("pulse audio state: terminating")
             break;
         default:
-            CLOG_DEBUG("unknown pulse audio state: %d", state);
+            CLOG_OUTPUT_STDERR("unknown pulse audio state: %d", state);
             break;
     }
 }
@@ -149,7 +149,7 @@ int thunder_pulseaudio_sound_driver_init(thunder_pulseaudio_sound_driver* self, 
 
 void thunder_pulseaudio_sound_driver_free(thunder_pulseaudio_sound_driver* self)
 {
-    CLOG_DEBUG("pulseaudio: closing")
+    CLOG_OUTPUT_STDERR("pulseaudio: closing")
     pa_threaded_mainloop_stop(self->mainloop);
     pa_context_disconnect(self->context);
     pa_threaded_mainloop_free(self->mainloop);
