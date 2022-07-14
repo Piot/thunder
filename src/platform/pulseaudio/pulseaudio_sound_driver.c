@@ -104,6 +104,18 @@ static void stateCallback(pa_context* c, void* userdata)
         case PA_CONTEXT_TERMINATED:
             CLOG_OUTPUT_STDERR("pulse audio state: terminating")
             break;
+        case PA_CONTEXT_UNCONNECTED:
+            CLOG_OUTPUT_STDERR("pulse audio state: unconnected")
+            break;
+        case PA_CONTEXT_AUTHORIZING:
+            CLOG_OUTPUT_STDERR("pulse audio state: authorizing")
+            break;
+        case PA_CONTEXT_SETTING_NAME:
+            CLOG_OUTPUT_STDERR("pulse audio state: setting name")
+            break;
+        case PA_CONTEXT_FAILED:
+            CLOG_OUTPUT_STDERR("pulse audio state: failed")
+            break;
         default:
             CLOG_OUTPUT_STDERR("unknown pulse audio state: %d", state);
             break;
