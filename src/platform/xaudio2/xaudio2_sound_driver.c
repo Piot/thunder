@@ -31,7 +31,7 @@ typedef struct thunder_xaudio2_callback {
     {                                                                                                                  \
         HRESULT hr;                                                                                                    \
         if ((hr = code) != S_OK) {   \
-            CLOG_WARN("operation failed %08X", hr); \
+            CLOG_WARN("operation failed %08lX", hr); \
             return (int) hr;                                                                                           \
         }                                                                                                              \
     }
@@ -40,7 +40,7 @@ typedef struct thunder_xaudio2_callback {
     {                                                                                                                  \
         HRESULT hr;                                                                                                    \
         if ((hr = code) != S_OK) {                                                                                     \
-            CLOG_ERROR("operation failed %08X", hr);                                                                    \
+            CLOG_ERROR("operation failed %08lX", hr);                                                                    \
         }                                                                                                              \
     }
 
@@ -73,7 +73,7 @@ static int fillBufferWithSine(IAudioRenderClient* renderClient, UINT32 blockAlig
 */
 static void printFormat(const WAVEFORMATEXTENSIBLE* waveFormatExtensible, const char* prefix)
 {
-    const WAVEFORMATEX* waveFormat = &waveFormatExtensible->Format;
+    CLOG_EXECUTE(const WAVEFORMATEX* waveFormat = &waveFormatExtensible->Format;)
     CLOG_DEBUG("%s: channels %d freq %d bits %d (%d)\n", prefix, waveFormat->nChannels, waveFormat->nSamplesPerSec,
                waveFormat->wBitsPerSample, waveFormat->wFormatTag);
 }
@@ -109,13 +109,13 @@ static void setupStereoFormat(WAVEFORMATEXTENSIBLE* proposedFormat, UINT32 frequ
 
 static void WINAPI onVoiceProcessingPassStart(IXAudio2VoiceCallback* iface, UINT32 BytesRequired)
 {
-    ThunderXaudio2SoundDriver* self = ((thunder_xaudio2_callback*) iface)->self;
+    //ThunderXaudio2SoundDriver* self = ((thunder_xaudio2_callback*) iface)->self;
 
 }
 
 static void WINAPI onVoiceProcessingPassEnd(IXAudio2VoiceCallback* iface)
 {
-    ThunderXaudio2SoundDriver* self = ((thunder_xaudio2_callback*) iface)->self;
+    //ThunderXaudio2SoundDriver* self = ((thunder_xaudio2_callback*) iface)->self;
 
 }
 
