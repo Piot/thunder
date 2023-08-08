@@ -8,6 +8,6 @@
 void thunder_audio_node_init(ThunderAudioNode* self, ThunderAudioNodeOutputFunc func, void* other_self)
 {
     self->output = func;
-    CLOG_ASSERT(other_self != 0, "Must provide valid self");
+    CLOG_ASSERT(other_self != 0, "Must provide valid self")
     self->_self = other_self;
 }
