@@ -10,11 +10,3 @@ version = "*"
 [[dependencies]]
 name = 'piot/basal-c'
 version = "*"
-
-[[development]]
-name = 'piot/breathe'
-version = "*"
-
-[[development]]
-name = 'piot/burst'
-version = "*"

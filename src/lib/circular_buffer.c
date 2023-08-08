@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved.
+ *  Licensed under the MIT License. See LICENSE in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 #include <clog/clog.h>
 #include <thunder/circular_buffer.h>
 #include <tiny-libc/tiny_libc.h>
@@ -15,7 +19,7 @@ void thunderAudioCircularBufferDestroy(ThunderAudioCircularBuffer* self)
     tc_free(self->buffer);
 }
 
-int thunderAudioCircularBufferReadAvailable(const ThunderAudioCircularBuffer* self)
+size_t thunderAudioCircularBufferReadAvailable(const ThunderAudioCircularBuffer* self)
 {
     return self->size;
 }
@@ -24,13 +28,13 @@ void thunderAudioCircularBufferWrite(ThunderAudioCircularBuffer* self, const Thu
                                      size_t sampleCountInTarget)
 {
     const ThunderSample* source = data;
-    int sampleCount = sampleCountInTarget;
+    size_t sampleCount = sampleCountInTarget;
 
     if ((sampleCount % 2) != 0) {
         CLOG_ERROR("thunderAudioCircularBufferWrite: it was intended to be used for interleaved stereo");
     }
 
-    int availableWriteCount = self->max_size - self->size;
+    size_t availableWriteCount = self->max_size - self->size;
     if (sampleCount > availableWriteCount) {
         sampleCount = availableWriteCount;
     }
@@ -39,8 +43,8 @@ void thunderAudioCircularBufferWrite(ThunderAudioCircularBuffer* self, const Thu
         return;
     }
 
-    int firstAvailable = self->max_size - self->write_index;
-    int firstRun = sampleCount;
+    size_t firstAvailable = self->max_size - self->write_index;
+    size_t firstRun = sampleCount;
     if (firstRun > firstAvailable) {
         firstRun = firstAvailable;
     }
@@ -65,14 +69,14 @@ void thunderAudioCircularBufferRead(ThunderAudioCircularBuffer* self, ThunderSam
 {
     ThunderSample* target = output;
 
-    int availableReadCount = self->size;
-    int readCount = requiredCount;
+    size_t availableReadCount = self->size;
+    size_t readCount = requiredCount;
     if (readCount > availableReadCount) {
         readCount = availableReadCount;
     }
 
-    int availableFirstRun = self->max_size - self->read_index;
-    int firstRun = readCount;
+    size_t availableFirstRun = self->max_size - self->read_index;
+    size_t firstRun = readCount;
     if (readCount > availableFirstRun) {
         firstRun = availableFirstRun;
     }
@@ -91,7 +95,7 @@ void thunderAudioCircularBufferRead(ThunderAudioCircularBuffer* self, ThunderSam
     target += readCount;
 
     if (requiredCount > availableReadCount) {
-        int rest = requiredCount - availableReadCount;
+        size_t rest = requiredCount - availableReadCount;
         tc_mem_clear_type_n(target, rest);
     }
 }

@@ -3,4 +3,9 @@ external/
 .vscode/
 deps*/
 .DS_Store
-
+build/
+.cmake/
+Testing/
+.ninja_*
+*.ninja
+src/lib/libthunder.a

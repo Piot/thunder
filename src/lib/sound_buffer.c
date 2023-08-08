@@ -1,33 +1,12 @@
-/*
-
-MIT License
-
-Copyright (c) 2012 Peter Bjorklund
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-*/
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved.
+ *  Licensed under the MIT License. See LICENSE in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 #include <clog/clog.h>
 #include <imprint/allocator.h>
 #include <thunder/sound_buffer.h>
 
-void thunder_audio_buffer_write(thunder_audio_buffer* self, const ThunderSample* samples, int sample_count)
+void thunder_audio_buffer_write(thunder_audio_buffer* self, const ThunderSample* samples, size_t sample_count)
 {
     CLOG_ASSERT(self->atom_size == sample_count, "Wrong store size:%d", sample_count);
 
@@ -35,7 +14,7 @@ void thunder_audio_buffer_write(thunder_audio_buffer* self, const ThunderSample*
         // return;
     }
 
-    int index = self->write_index;
+    size_t index = self->write_index;
 
     ThunderSampleOutputS16* buffer = self->buffers[index];
 
@@ -51,9 +30,9 @@ void thunder_audio_buffer_write(thunder_audio_buffer* self, const ThunderSample*
 }
 
 // NOTE: IMPORTANT: You can not allocate mewmory or use mutex when reading!
-void thunder_audio_buffer_read(thunder_audio_buffer* self, ThunderSampleOutputS16* output, int sample_count)
+void thunder_audio_buffer_read(thunder_audio_buffer* self, ThunderSampleOutputS16* output, size_t sample_count)
 {
-    int samples_to_read = sample_count;
+    size_t samples_to_read = sample_count;
 
     if (samples_to_read > self->read_buffer_samples_left) {
         samples_to_read = self->read_buffer_samples_left;
@@ -81,14 +60,15 @@ void thunder_audio_buffer_read(thunder_audio_buffer* self, ThunderSampleOutputS1
     }
 }
 
-void thunder_audio_buffer_init(thunder_audio_buffer* self, struct ImprintAllocator* memory, int bufferCount, int atom_size)
+void thunder_audio_buffer_init(thunder_audio_buffer* self, struct ImprintAllocator* memory, size_t bufferCount,
+                               size_t atom_size)
 {
     self->buffer_count = bufferCount;
     self->atom_size = atom_size;
-    self->read_index = -1;
+    self->read_index = (size_t) -1;
     self->write_index = 0;
     self->buffers = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSampleOutputS16*, self->buffer_count);
-    for (int i = 0; i < self->buffer_count; ++i) {
+    for (size_t i = 0; i < self->buffer_count; ++i) {
         self->buffers[i] = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSampleOutputS16, atom_size);
     }
     self->read_buffer = 0;
@@ -97,13 +77,13 @@ void thunder_audio_buffer_init(thunder_audio_buffer* self, struct ImprintAllocat
 
 float thunder_audio_buffer_percentage_full(thunder_audio_buffer* self)
 {
-    int diff = thunder_audio_buffer_atoms_full(self);
-    return diff / (float) self->buffer_count;
+    size_t diff = thunder_audio_buffer_atoms_full(self);
+    return (float) diff / (float) self->buffer_count;
 }
 
-int thunder_audio_buffer_atoms_full(thunder_audio_buffer* self)
+size_t thunder_audio_buffer_atoms_full(thunder_audio_buffer* self)
 {
-    int diff;
+    size_t diff;
 
     if (self->write_index == self->read_index) {
         return 0;
@@ -120,7 +100,7 @@ int thunder_audio_buffer_atoms_full(thunder_audio_buffer* self)
 
 void thunder_audio_buffer_free(thunder_audio_buffer* self)
 {
-    for (int i = 0; i < self->buffer_count; ++i) {
+    for (size_t i = 0; i < self->buffer_count; ++i) {
         tc_free(self->buffers[i]);
     }
     tc_free(self->buffers);

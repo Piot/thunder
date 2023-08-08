@@ -1,28 +1,7 @@
-/*
-
-MIT License
-
-Copyright (c) 2012 Peter Bjorklund
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-*/
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved.
+ *  Licensed under the MIT License. See LICENSE in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 #include <clog/clog.h>
 #include <imprint/allocator.h>
 #include <thunder/audio_node.h>
@@ -32,27 +11,20 @@ SOFTWARE.
 #define THUNDER_ATOM_SAMPLE_COUNT (3200)
 #define THUNDER_ATOM_COUNT_BUFFER (4)
 
-static void mix_down_using_volume(ThunderMixSample* source, int size, float mix_down_volume, ThunderSample* target)
+static void mix_down_using_volume(ThunderMixSample* source, size_t size, float mix_down_volume, ThunderSample* target)
 {
-    const int DIVISOR = 8;
+    const size_t DIVISOR = 8;
+    int64_t mix = (int64_t) (mix_down_volume * 256);
     CLOG_ASSERT((THUNDER_ATOM_SAMPLE_COUNT % DIVISOR) == 0, "Illegal divisor");
-    for (int i = 0; i < size / DIVISOR; ++i) {
-        *target = *source++ * mix_down_volume;
-        target++;
-        *target = *source++ * mix_down_volume;
-        target++;
-        *target = *source++ * mix_down_volume;
-        target++;
-        *target = *source++ * mix_down_volume;
-        target++;
-        *target = *source++ * mix_down_volume;
-        target++;
-        *target = *source++ * mix_down_volume;
-        target++;
-        *target = *source++ * mix_down_volume;
-        target++;
-        *target = *source++ * mix_down_volume;
-        target++;
+    for (size_t i = 0; i < size / DIVISOR; ++i) {
+        *target++ = (ThunderSample) ((*source++ * mix) >> 8);
+        *target++ = (ThunderSample) ((*source++ * mix) >> 8);
+        *target++ = (ThunderSample) ((*source++ * mix) >> 8);
+        *target++ = (ThunderSample) ((*source++ * mix) >> 8);
+        *target++ = (ThunderSample) ((*source++ * mix) >> 8);
+        *target++ = (ThunderSample) ((*source++ * mix) >> 8);
+        *target++ = (ThunderSample) ((*source++ * mix) >> 8);
+        *target++ = (ThunderSample) ((*source++ * mix) >> 8);
     }
 }
 
@@ -73,7 +45,7 @@ static ThunderMixSample maximum_amplitude(const ThunderMixSample* target, int si
     }
 
     ThunderMixSample max_amplitude = (-minimum_amplitude_found > maximum_amplitude_found) ? -minimum_amplitude_found
-                                                                                            : maximum_amplitude_found;
+                                                                                          : maximum_amplitude_found;
 
     return max_amplitude;
 }
@@ -108,23 +80,24 @@ static void add_to_output(ThunderMixSample* output, int channel, int number_of_c
     ThunderMixSample* target = output + channel;
     ThunderMixSample* end = output + THUNDER_ATOM_SAMPLE_COUNT; // - channel;
     const ThunderSample* source = source_sample;
+    ThunderMixSample factor = (ThunderMixSample) (volume * 256);
 
     while (target < end) {
-        *target += *source++ * volume;
+        *target += (*source++ * factor) >> 8;
         target += number_of_channels;
-        *target += *source++ * volume;
+        *target += (*source++ * factor) >> 8;
         target += number_of_channels;
-        *target += *source++ * volume;
+        *target += (*source++ * factor) >> 8;
         target += number_of_channels;
-        *target += *source++ * volume;
+        *target += (*source++ * factor) >> 8;
         target += number_of_channels;
-        *target += *source++ * volume;
+        *target += (*source++ * factor) >> 8;
         target += number_of_channels;
-        *target += *source++ * volume;
+        *target += (*source++ * factor) >> 8;
         target += number_of_channels;
-        *target += *source++ * volume;
+        *target += (*source++ * factor) >> 8;
         target += number_of_channels;
-        *target += *source++ * volume;
+        *target += (*source++ * factor) >> 8;
         target += number_of_channels;
     }
 }
@@ -139,7 +112,7 @@ static void enumerate_nodes(ThunderAudioCompositor* self)
 
     ThunderMixSample* output = self->output;
 
-    for (int i = 0; i < self->nodes_count; ++i) {
+    for (size_t i = 0; i < self->nodes_count; ++i) {
         ThunderAudioNode* node = &self->nodes[i];
 
         if (node->is_playing) {
@@ -148,7 +121,7 @@ static void enumerate_nodes(ThunderAudioCompositor* self)
                 add_to_output(output, 0, 1, source, node->volume);
             } else {
                 node->output(node->_self, source, THUNDER_ATOM_SAMPLE_COUNT / 2);
-                float normalized_pan = (node->pan + 1.0f) / 2.0f;
+                float normalized_pan = ((float) node->pan + 1.0f) / 2.0f;
                 add_to_output(output, LEFT_CHANNEL, NUMBER_OF_OUTPUT_CHANNELS, source, normalized_pan * node->volume);
                 add_to_output(output, RIGHT_CHANNEL, NUMBER_OF_OUTPUT_CHANNELS, source,
                               (1.0f - normalized_pan) * node->volume);
@@ -196,7 +169,7 @@ void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintA
     self->output_16_bit = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSample, THUNDER_ATOM_SAMPLE_COUNT);
     self->nodes_max_count = 10;
     self->nodes = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderAudioNode, self->nodes_max_count);
-    for (int i = 0; i < self->nodes_max_count; ++i) {
+    for (size_t i = 0; i < self->nodes_max_count; ++i) {
         self->nodes[i]._self = 0;
         self->nodes[i].output = 0;
     }

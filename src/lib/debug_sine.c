@@ -1,29 +1,8 @@
-/*
-
-MIT License
-
-Copyright (c) 2012 Peter Bjorklund
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-*/
-#include <basal/basal_math.h>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved.
+ *  Licensed under the MIT License. See LICENSE in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+#include <basal/math.h>
 #include <stdio.h>
 #include <thunder/audio_node.h>
 #include <thunder/sound_module.h>
@@ -49,7 +28,7 @@ static void generate_sine(void* _self, ThunderSample* output, int sample_count)
         float f = sinf(angle);
         float amplitude = self->amplitude / 1000000.0f;
 
-        output[i] = (f * 32767.0f * amplitude);
+        output[i] = ((ThunderSample) (f * 32767.0f * amplitude));
         self->time += self->timeFactor;
         self->amplitude += self->amplitudeFactor;
         if (self->amplitude > 1000000) {
@@ -91,12 +70,12 @@ void thunderSoundModuleDebugSineWave(ThunderSoundModule* self, struct ImprintMem
 {
     (void) memory;
 
-    const uint64_t base = 4300;
+    const double base = 4300;
+    const uint64_t first = ((uint64_t) (1.4983 * base));
+    const uint64_t second = ((uint64_t) (1.2599 * base));
+    const uint64_t third = ((uint64_t) (2.0 * base));
 
-    const uint64_t first = (1.4983 * base);
-    const uint64_t second = (1.2599 * base);
-    const uint64_t third = (2.0 * base);
-    add_sine(self, 0, base, 30);
+    add_sine(self, 0, (uint64_t) base, 30);
     add_sine(self, 1120, first, 20);
     add_sine(self, 530, second, 4);
     add_sine(self, 130, third, 6);
