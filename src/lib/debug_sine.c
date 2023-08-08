@@ -24,9 +24,9 @@ static void generate_sine(void* _self, ThunderSample* output, int sample_count)
     // printf("sine:%d\n", sample_count);
     debug_sine* self = _self;
     for (int i = 0; i < sample_count; ++i) {
-        float angle = (self->time % 628318) / 100000.0f;
+        float angle = self->time % 628318 / 100000.0f;
         float f = sinf(angle);
-        float amplitude = self->amplitude / 1000000.0f;
+        float amplitude = (float) self->amplitude / 1000000.0f;
 
         output[i] = ((ThunderSample) (f * 32767.0f * amplitude));
         self->time += self->timeFactor;
@@ -46,10 +46,10 @@ static ThunderAudioNode make_sine_node(uint64_t offset, uint64_t factor, uint64_
     self._self = data;
     self.is_playing = 1;
     self.channel_count = 1;
-    self.pan = 0.0f;
+    self.pan = 0;
     self.volume = 0.5f;
 
-    data->offset = offset;
+    data->offset = (float) offset;
     data->timeFactor = factor;
     data->amplitude = 10;
     data->amplitudeFactor = amplitudeFactor;

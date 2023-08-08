@@ -31,7 +31,7 @@ void thunderAudioCircularBufferWrite(ThunderAudioCircularBuffer* self, const Thu
     size_t sampleCount = sampleCountInTarget;
 
     if ((sampleCount % 2) != 0) {
-        CLOG_ERROR("thunderAudioCircularBufferWrite: it was intended to be used for interleaved stereo");
+        CLOG_ERROR("thunderAudioCircularBufferWrite: it was intended to be used for interleaved stereo")
     }
 
     size_t availableWriteCount = self->max_size - self->size;
