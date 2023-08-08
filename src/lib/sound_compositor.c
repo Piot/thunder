@@ -15,7 +15,7 @@ static void mix_down_using_volume(ThunderMixSample* source, size_t size, float m
 {
     const size_t DIVISOR = 8;
     int64_t mix = (int64_t) (mix_down_volume * 256);
-    CLOG_ASSERT((THUNDER_ATOM_SAMPLE_COUNT % DIVISOR) == 0, "Illegal divisor");
+    CLOG_ASSERT((THUNDER_ATOM_SAMPLE_COUNT % DIVISOR) == 0, "Illegal divisor")
     for (size_t i = 0; i < size / DIVISOR; ++i) {
         *target++ = (ThunderSample) ((*source++ * mix) >> 8);
         *target++ = (ThunderSample) ((*source++ * mix) >> 8);
@@ -53,7 +53,7 @@ static ThunderMixSample maximum_amplitude(const ThunderMixSample* target, int si
 static void adjust_mix_down_volume(ThunderAudioCompositor* self, ThunderMixSample maximum_amplitude_found)
 {
     float maximum_amplitude_as_factor = (float) maximum_amplitude_found / 32767.0f;
-    if (maximum_amplitude_found <= 0.01f) {
+    if (maximum_amplitude_found <= 2) {
         return;
     }
     float optimal_volume = (1.0f / maximum_amplitude_as_factor);
