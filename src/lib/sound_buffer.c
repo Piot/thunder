@@ -8,7 +8,7 @@
 
 void thunder_audio_buffer_write(thunder_audio_buffer* self, const ThunderSample* samples, size_t sample_count)
 {
-    CLOG_ASSERT(self->atom_size == sample_count, "Wrong store size:%d", sample_count);
+    CLOG_ASSERT(self->atom_size == sample_count, "Wrong store size:%zu", sample_count)
 
     if (self->write_index == self->read_index) {
         // return;
