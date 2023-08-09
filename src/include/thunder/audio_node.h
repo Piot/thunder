@@ -7,8 +7,9 @@
 
 #include <thunder/sound_types.h>
 #include <stdbool.h>
+#include <stddef.h>
 
-typedef void (*ThunderAudioNodeOutputFunc)(void* self, ThunderSample* sample, int sample_count);
+typedef void (*ThunderAudioNodeOutputFunc)(void* self, ThunderSample* sample, size_t sample_count);
 
 typedef struct ThunderAudioNode {
     ThunderAudioNodeOutputFunc output;

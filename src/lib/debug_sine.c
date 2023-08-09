@@ -16,11 +16,11 @@ typedef struct debug_sine {
     float offset;
 } debug_sine;
 
-static void generate_sine(void* _self, ThunderSample* output, int sample_count)
+static void generate_sine(void* _self, ThunderSample* output, size_t sample_count)
 {
     // printf("sine:%d\n", sample_count);
     debug_sine* self = _self;
-    for (int i = 0; i < sample_count; ++i) {
+    for (size_t i = 0; i < sample_count; ++i) {
         float angle = self->time % 628318 / 100000.0f;
         float f = sinf(angle);
         float amplitude = (float) self->amplitude / 1000000.0f;
