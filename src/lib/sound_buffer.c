@@ -6,103 +6,103 @@
 #include <imprint/allocator.h>
 #include <thunder/sound_buffer.h>
 
-void thunder_audio_buffer_write(thunder_audio_buffer* self, const ThunderSample* samples, size_t sample_count)
+void thunderAudioBufferWrite(ThunderAudioBuffer* self, const ThunderSample* samples, size_t sample_count)
 {
-    CLOG_ASSERT(self->atom_size == sample_count, "Wrong store size:%zu", sample_count)
+    CLOG_ASSERT(self->atomSize == sample_count, "Wrong store size:%zu", sample_count)
 
-    if (self->write_index == self->read_index) {
+    if (self->writeIndex == self->readIndex) {
         // return;
     }
 
-    size_t index = self->write_index;
+    size_t index = self->writeIndex;
 
     ThunderSampleOutputS16* buffer = self->buffers[index];
 
     tc_memcpy_octets(buffer, samples, sample_count * sizeof(ThunderSample));
 
-    if (!self->read_buffer) {
-        self->read_buffer = self->buffers[0];
-        self->read_buffer_samples_left = self->atom_size;
+    if (!self->readBuffer) {
+        self->readBuffer = self->buffers[0];
+        self->readBufferSamplesLeft = self->atomSize;
     }
 
-    self->write_index++;
-    self->write_index %= self->buffer_count;
+    self->writeIndex++;
+    self->writeIndex %= self->bufferCount;
 }
 
 // NOTE: IMPORTANT: You can not allocate mewmory or use mutex when reading!
-void thunder_audio_buffer_read(thunder_audio_buffer* self, ThunderSampleOutputS16* output, size_t sample_count)
+void thunderAudioBufferRead(ThunderAudioBuffer* self, ThunderSampleOutputS16* output, size_t sample_count)
 {
     size_t samples_to_read = sample_count;
 
-    if (samples_to_read > self->read_buffer_samples_left) {
-        samples_to_read = self->read_buffer_samples_left;
+    if (samples_to_read > self->readBufferSamplesLeft) {
+        samples_to_read = self->readBufferSamplesLeft;
     }
-    tc_memcpy_type(ThunderSampleOutputS16, output, self->read_buffer, samples_to_read);
+    tc_memcpy_type(ThunderSampleOutputS16, output, self->readBuffer, samples_to_read);
     sample_count -= samples_to_read;
-    self->read_buffer_samples_left -= samples_to_read;
+    self->readBufferSamplesLeft -= samples_to_read;
 
-    if (self->read_buffer_samples_left == 0) {
-        if (self->write_index == self->read_index) {
+    if (self->readBufferSamplesLeft == 0) {
+        if (self->writeIndex == self->readIndex) {
             ThunderSampleOutputS16* zero = output + samples_to_read;
             tc_mem_clear_type_n(zero, sample_count);
             return;
         }
-        self->read_index++;
-        self->read_index %= self->buffer_count;
-        self->read_buffer = self->buffers[self->read_index];
-        self->read_buffer_samples_left = self->atom_size;
+        self->readIndex++;
+        self->readIndex %= self->bufferCount;
+        self->readBuffer = self->buffers[self->readIndex];
+        self->readBufferSamplesLeft = self->atomSize;
     } else {
-        self->read_buffer += samples_to_read;
+        self->readBuffer += samples_to_read;
     }
 
     if (sample_count > 0) {
-        thunder_audio_buffer_read(self, output + samples_to_read, sample_count);
+        thunderAudioBufferRead(self, output + samples_to_read, sample_count);
     }
 }
 
-void thunder_audio_buffer_init(thunder_audio_buffer* self, struct ImprintAllocator* memory, size_t bufferCount,
+void thunderAudioBufferInit(ThunderAudioBuffer* self, struct ImprintAllocator* memory, size_t atom_count,
                                size_t atom_size)
 {
-    self->buffer_count = bufferCount;
-    self->atom_size = atom_size;
-    self->read_index = (size_t) -1;
-    self->write_index = 0;
-    self->buffers = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSampleOutputS16*, self->buffer_count);
-    for (size_t i = 0; i < self->buffer_count; ++i) {
+    self->bufferCount = atom_count;
+    self->atomSize = atom_size;
+    self->readIndex = (size_t) -1;
+    self->writeIndex = 0;
+    self->buffers = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSampleOutputS16*, self->bufferCount);
+    for (size_t i = 0; i < self->bufferCount; ++i) {
         self->buffers[i] = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSampleOutputS16, atom_size);
     }
-    self->read_buffer = 0;
-    self->read_buffer_samples_left = 0;
+    self->readBuffer = 0;
+    self->readBufferSamplesLeft = 0;
 }
 
-float thunder_audio_buffer_percentage_full(thunder_audio_buffer* self)
+float thunder_audio_buffer_percentage_full(ThunderAudioBuffer* self)
 {
-    size_t diff = thunder_audio_buffer_atoms_full(self);
-    return (float) diff / (float) self->buffer_count;
+    size_t diff = thunderAudioBufferAtomsFull(self);
+    return (float) diff / (float) self->bufferCount;
 }
 
-size_t thunder_audio_buffer_atoms_full(thunder_audio_buffer* self)
+size_t thunderAudioBufferAtomsFull(ThunderAudioBuffer* self)
 {
     size_t diff;
 
-    if (self->write_index == self->read_index) {
+    if (self->writeIndex == self->readIndex) {
         return 0;
     }
 
-    if (self->write_index > self->read_index) {
-        diff = self->write_index - self->read_index;
+    if (self->writeIndex > self->readIndex) {
+        diff = self->writeIndex - self->readIndex;
     } else {
-        diff = self->buffer_count - self->read_index + self->write_index;
+        diff = self->bufferCount - self->readIndex + self->writeIndex;
     }
 
     return diff;
 }
 
-void thunder_audio_buffer_free(thunder_audio_buffer* self)
+void thunderAudioBufferFree(ThunderAudioBuffer* self)
 {
-    for (size_t i = 0; i < self->buffer_count; ++i) {
+    for (size_t i = 0; i < self->bufferCount; ++i) {
         tc_free(self->buffers[i]);
     }
     tc_free(self->buffers);
-    self->buffer_count = 0;
+    self->bufferCount = 0;
 }

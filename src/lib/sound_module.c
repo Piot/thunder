@@ -10,34 +10,34 @@ void thunderSoundModuleUpdate(ThunderSoundModule* _self)
 {
     ThunderSoundModule* self = _self;
 
-    size_t atomsFull = thunder_audio_buffer_atoms_full(&self->compositor.buffer);
+    size_t atomsFull = thunderAudioBufferAtomsFull(&self->compositor.buffer);
     if (atomsFull >= 2) {
         return;
     }
 
-    thunder_audio_compositor_update(&self->compositor);
+    thunderAudioCompositorUpdate(&self->compositor);
     if (atomsFull < 1) {
-        thunder_audio_compositor_update(&self->compositor);
+        thunderAudioCompositorUpdate(&self->compositor);
     }
 }
 
 void thunderSoundModuleAddNode(ThunderSoundModule* self, ThunderAudioNode node)
 {
-    self->compositor.nodes[self->compositor.nodes_count++] = node;
+    self->compositor.nodes[self->compositor.nodesCount++] = node;
 }
 
 void thunderSoundModuleReload(ThunderSoundModule* self)
 {
-    thunder_audio_compositor_reload(&self->compositor);
+    thunderAudioCompositorReload(&self->compositor);
 }
 
 int thunderSoundModuleInit(ThunderSoundModule* self, struct ImprintAllocator* memory)
 {
-    thunder_audio_compositor_init(&self->compositor, memory);
+    thunderAudioCompositorInit(&self->compositor, memory);
 
-    thunder_audio_compositor_update(&self->compositor);
-    thunder_audio_compositor_update(&self->compositor);
-    thunder_audio_compositor_update(&self->compositor);
+    thunderAudioCompositorUpdate(&self->compositor);
+    thunderAudioCompositorUpdate(&self->compositor);
+    thunderAudioCompositorUpdate(&self->compositor);
 
     self->initialized = true;
 

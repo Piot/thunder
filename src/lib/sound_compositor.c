@@ -11,7 +11,7 @@
 #define THUNDER_ATOM_SAMPLE_COUNT (3200)
 #define THUNDER_ATOM_COUNT_BUFFER (4)
 
-static void mix_down_using_volume(ThunderMixSample* source, size_t size, float mix_down_volume, ThunderSample* target)
+static void mixDownUsingVolume(ThunderMixSample* source, size_t size, float mix_down_volume, ThunderSample* target)
 {
     const size_t DIVISOR = 8;
     int64_t mix = (int64_t) (mix_down_volume * 256);
@@ -28,7 +28,7 @@ static void mix_down_using_volume(ThunderMixSample* source, size_t size, float m
     }
 }
 
-static ThunderMixSample maximum_amplitude(const ThunderMixSample* target, int size)
+static ThunderMixSample maximumAmplitude(const ThunderMixSample* target, int size)
 {
     ThunderMixSample maximum_amplitude_found = 0;
     ThunderMixSample minimum_amplitude_found = 0;
@@ -50,7 +50,7 @@ static ThunderMixSample maximum_amplitude(const ThunderMixSample* target, int si
     return max_amplitude;
 }
 
-static void adjust_mix_down_volume(ThunderAudioCompositor* self, ThunderMixSample maximum_amplitude_found)
+static void adjustMixDownVolume(ThunderAudioCompositor* self, ThunderMixSample maximum_amplitude_found)
 {
     float maximum_amplitude_as_factor = (float) maximum_amplitude_found / 32767.0f;
     if (maximum_amplitude_found <= 2) {
@@ -62,19 +62,19 @@ static void adjust_mix_down_volume(ThunderAudioCompositor* self, ThunderMixSampl
     if (optimal_volume > max_volume) {
         optimal_volume = max_volume;
     }
-    if (optimal_volume < self->mix_down_volume) {
-        self->mix_down_volume = optimal_volume * 0.95f;
+    if (optimal_volume < self->mixDownVolume) {
+        self->mixDownVolume = optimal_volume * 0.95f;
         // CLOG_VERBOSE("HIGH AMPLITUDE ADJUSTING: Max Found:%d, Dynamics:%f", maximum_amplitude_found,
         // self->mix_down_volume);
     } else if (optimal_volume >=
-               self->mix_down_volume + 0.1f) { // It must be a big difference to be bother to increased the volume
-        self->mix_down_volume += (optimal_volume - self->mix_down_volume) / (float) (60 * 30);
+               self->mixDownVolume + 0.1f) { // It must be a big difference to be bother to increased the volume
+        self->mixDownVolume += (optimal_volume - self->mixDownVolume) / (float) (60 * 30);
         // CLOG_VERBOSE("slightly increasing Max Found:%d, Dynamics:%f", maximum_amplitude_found,
         // self->mix_down_volume);
     }
 }
 
-static void add_to_output(ThunderMixSample* output, int channel, int number_of_channels,
+static void addToOutput(ThunderMixSample* output, int channel, int number_of_channels,
                           const ThunderSample* source_sample, float volume)
 {
     ThunderMixSample* target = output + channel;
@@ -102,7 +102,7 @@ static void add_to_output(ThunderMixSample* output, int channel, int number_of_c
     }
 }
 
-static void enumerate_nodes(ThunderAudioCompositor* self)
+static void enumerateNodes(ThunderAudioCompositor* self)
 {
     ThunderSample source[THUNDER_ATOM_SAMPLE_COUNT];
 
@@ -112,76 +112,76 @@ static void enumerate_nodes(ThunderAudioCompositor* self)
 
     ThunderMixSample* output = self->output;
 
-    for (size_t i = 0; i < self->nodes_count; ++i) {
+    for (size_t i = 0; i < self->nodesCount; ++i) {
         ThunderAudioNode* node = &self->nodes[i];
 
         if (node->is_playing) {
             if (node->channel_count == 2) {
                 node->output(node->_self, source, THUNDER_ATOM_SAMPLE_COUNT / 2);
-                add_to_output(output, 0, 1, source, node->volume);
+                addToOutput(output, 0, 1, source, node->volume);
             } else {
                 node->output(node->_self, source, THUNDER_ATOM_SAMPLE_COUNT / 2);
                 float normalized_pan = ((float) node->pan + 1.0f) / 2.0f;
-                add_to_output(output, LEFT_CHANNEL, NUMBER_OF_OUTPUT_CHANNELS, source, normalized_pan * node->volume);
-                add_to_output(output, RIGHT_CHANNEL, NUMBER_OF_OUTPUT_CHANNELS, source,
-                              (1.0f - normalized_pan) * node->volume);
+                addToOutput(output, LEFT_CHANNEL, NUMBER_OF_OUTPUT_CHANNELS, source, normalized_pan * node->volume);
+                addToOutput(output, RIGHT_CHANNEL, NUMBER_OF_OUTPUT_CHANNELS, source,
+                            (1.0f - normalized_pan) * node->volume);
             }
         }
     }
 }
 
-static void compress_to_16_bit(ThunderAudioCompositor* self, ThunderSample* output)
+static void compressTo16Bit(ThunderAudioCompositor* self, ThunderSample* output)
 {
-    ThunderMixSample max_amplitude = maximum_amplitude(self->output, THUNDER_ATOM_SAMPLE_COUNT);
+    ThunderMixSample max_amplitude = maximumAmplitude(self->output, THUNDER_ATOM_SAMPLE_COUNT);
 
-    adjust_mix_down_volume(self, max_amplitude);
-    self->mix_down_volume = 1.0f;
-    mix_down_using_volume(self->output, THUNDER_ATOM_SAMPLE_COUNT, self->mix_down_volume, output);
+    adjustMixDownVolume(self, max_amplitude);
+    self->mixDownVolume = 1.0f;
+    mixDownUsingVolume(self->output, THUNDER_ATOM_SAMPLE_COUNT, self->mixDownVolume, output);
 }
 
-static void clear_buffer(ThunderMixSample* output)
+static void clearBuffer(ThunderMixSample* output)
 {
     tc_mem_clear_type_n(output, THUNDER_ATOM_SAMPLE_COUNT);
 }
 
-void thunder_audio_compositor_update(ThunderAudioCompositor* self)
+void thunderAudioCompositorUpdate(ThunderAudioCompositor* self)
 {
-    clear_buffer(self->output);
-    enumerate_nodes(self);
-    compress_to_16_bit(self, self->output_16_bit);
-    thunder_audio_buffer_write(&self->buffer, self->output_16_bit, THUNDER_ATOM_SAMPLE_COUNT);
+    clearBuffer(self->output);
+    enumerateNodes(self);
+    compressTo16Bit(self, self->output16Bit);
+    thunderAudioBufferWrite(&self->buffer, self->output16Bit, THUNDER_ATOM_SAMPLE_COUNT);
 }
 
-void thunder_audio_compositor_reload(ThunderAudioCompositor* self)
+void thunderAudioCompositorReload(ThunderAudioCompositor* self)
 {
-    for (size_t i = 0; i < self->nodes_max_count; ++i) {
+    for (size_t i = 0; i < self->nodesMaxCount; ++i) {
         ThunderAudioNode* node = &self->nodes[i];
         node->is_playing = 0;
         node->output = 0;
     }
 
-    self->nodes_count = 0;
+    self->nodesCount = 0;
 }
 
-void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintAllocator* memory)
+void thunderAudioCompositorInit(ThunderAudioCompositor* self, struct ImprintAllocator* memory)
 {
     self->output = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderMixSample, THUNDER_ATOM_SAMPLE_COUNT);
-    self->output_16_bit = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSample, THUNDER_ATOM_SAMPLE_COUNT);
-    self->nodes_max_count = 10;
-    self->nodes = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderAudioNode, self->nodes_max_count);
-    for (size_t i = 0; i < self->nodes_max_count; ++i) {
+    self->output16Bit = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderSample, THUNDER_ATOM_SAMPLE_COUNT);
+    self->nodesMaxCount = 10;
+    self->nodes = IMPRINT_CALLOC_TYPE_COUNT(memory, ThunderAudioNode, self->nodesMaxCount);
+    for (size_t i = 0; i < self->nodesMaxCount; ++i) {
         self->nodes[i]._self = 0;
         self->nodes[i].output = 0;
     }
 
-    thunder_audio_buffer_init(&self->buffer, memory, THUNDER_ATOM_COUNT_BUFFER, THUNDER_ATOM_SAMPLE_COUNT);
+    thunderAudioBufferInit(&self->buffer, memory, THUNDER_ATOM_COUNT_BUFFER, THUNDER_ATOM_SAMPLE_COUNT);
 
-    self->mix_down_volume = 1;
+    self->mixDownVolume = 1;
 }
 
-void thunder_audio_compositor_free(ThunderAudioCompositor* self)
+void thunderAudioCompositorFree(ThunderAudioCompositor* self)
 {
     tc_free(self->output);
     tc_free(self->nodes);
-    thunder_audio_buffer_free(&self->buffer);
+    thunderAudioBufferFree(&self->buffer);
 }

@@ -4,14 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 #include <clog/clog.h>
 #include <thunder/circular_buffer.h>
-#include <tiny-libc/tiny_libc.h>
 
 void thunderAudioCircularBufferInit(ThunderAudioCircularBuffer* self, size_t maxSize)
 {
     self->buffer = tc_malloc_type_count(ThunderSampleOutputS16, maxSize);
-    self->write_index = 0;
-    self->read_index = 0;
-    self->max_size = maxSize;
+    self->writeIndex = 0;
+    self->readIndex = 0;
+    self->maxSize = maxSize;
 }
 
 void thunderAudioCircularBufferDestroy(ThunderAudioCircularBuffer* self)
@@ -34,7 +33,7 @@ void thunderAudioCircularBufferWrite(ThunderAudioCircularBuffer* self, const Thu
         CLOG_ERROR("thunderAudioCircularBufferWrite: it was intended to be used for interleaved stereo")
     }
 
-    size_t availableWriteCount = self->max_size - self->size;
+    size_t availableWriteCount = self->maxSize - self->size;
     if (sampleCount > availableWriteCount) {
         sampleCount = availableWriteCount;
     }
@@ -43,25 +42,25 @@ void thunderAudioCircularBufferWrite(ThunderAudioCircularBuffer* self, const Thu
         return;
     }
 
-    size_t firstAvailable = self->max_size - self->write_index;
+    size_t firstAvailable = self->maxSize - self->writeIndex;
     size_t firstRun = sampleCount;
     if (firstRun > firstAvailable) {
         firstRun = firstAvailable;
     }
-    tc_memcpy_type(ThunderSampleOutputS16, self->buffer + self->write_index, source, firstRun);
+    tc_memcpy_type(ThunderSampleOutputS16, self->buffer + self->writeIndex, source, firstRun);
 
     sampleCount -= firstRun;
     source += firstRun;
     self->size += firstRun;
-    self->write_index += firstRun;
-    self->write_index %= self->max_size;
+    self->writeIndex += firstRun;
+    self->writeIndex %= self->maxSize;
     if (sampleCount == 0) {
         return;
     }
 
-    tc_memcpy_type(ThunderSampleOutputS16, self->buffer + self->write_index, source, sampleCount);
-    self->write_index += sampleCount;
-    self->write_index %= self->max_size;
+    tc_memcpy_type(ThunderSampleOutputS16, self->buffer + self->writeIndex, source, sampleCount);
+    self->writeIndex += sampleCount;
+    self->writeIndex %= self->maxSize;
     self->size += sampleCount;
 }
 
@@ -75,22 +74,22 @@ void thunderAudioCircularBufferRead(ThunderAudioCircularBuffer* self, ThunderSam
         readCount = availableReadCount;
     }
 
-    size_t availableFirstRun = self->max_size - self->read_index;
+    size_t availableFirstRun = self->maxSize - self->readIndex;
     size_t firstRun = readCount;
     if (readCount > availableFirstRun) {
         firstRun = availableFirstRun;
     }
 
-    tc_memcpy_type(ThunderSampleOutputS16, target, self->buffer + self->read_index, firstRun);
+    tc_memcpy_type(ThunderSampleOutputS16, target, self->buffer + self->readIndex, firstRun);
     target += firstRun;
-    self->read_index += firstRun;
-    self->read_index %= self->max_size;
+    self->readIndex += firstRun;
+    self->readIndex %= self->maxSize;
     self->size -= firstRun;
     readCount -= firstRun;
 
-    tc_memcpy_type(ThunderSampleOutputS16, target, self->buffer + self->read_index, readCount);
-    self->read_index += readCount;
-    self->read_index %= self->max_size;
+    tc_memcpy_type(ThunderSampleOutputS16, target, self->buffer + self->readIndex, readCount);
+    self->readIndex += readCount;
+    self->readIndex %= self->maxSize;
     self->size -= readCount;
     target += readCount;
 

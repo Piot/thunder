@@ -9,10 +9,10 @@
 #include <thunder/sound_types.h>
 
 typedef struct ThunderAudioCircularBuffer {
-    size_t max_size;
+    size_t maxSize;
     ThunderSampleOutputS16* buffer;
-    size_t write_index;
-    size_t read_index;
+    size_t writeIndex;
+    size_t readIndex;
     size_t size;
 } ThunderAudioCircularBuffer;
 

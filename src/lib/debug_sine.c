@@ -2,11 +2,8 @@
  *  Copyright (c) Peter Bjorklund. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-#include <basal/math.h>
-#include <stdio.h>
 #include <thunder/audio_node.h>
 #include <thunder/sound_module.h>
-#include <thunder/sound_types.h>
 #include <tiny-libc/tiny_libc.h>
 
 #include <math.h>
@@ -66,10 +63,8 @@ static void add_sine(ThunderSoundModule* self, uint64_t offset, uint64_t factor,
     thunderSoundModuleAddNode(self, node);
 }
 
-void thunderSoundModuleDebugSineWave(ThunderSoundModule* self, struct ImprintMemory* memory)
+void thunderSoundModuleDebugSineWave(ThunderSoundModule* self)
 {
-    (void) memory;
-
     const double base = 4300;
     const uint64_t first = ((uint64_t) (1.4983 * base));
     const uint64_t second = ((uint64_t) (1.2599 * base));

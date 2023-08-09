@@ -19,6 +19,6 @@ typedef struct ThunderAudioNode {
     float volume;
 } ThunderAudioNode;
 
-void thunder_audio_node_init(ThunderAudioNode* self, ThunderAudioNodeOutputFunc func, void* user_data);
+void thunderAudioNodeInit(ThunderAudioNode* self, ThunderAudioNodeOutputFunc func, void* other_self);
 
 #endif

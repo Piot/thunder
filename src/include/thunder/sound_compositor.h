@@ -14,20 +14,20 @@ struct ThunderAudioNode;
 
 typedef struct ThunderAudioCompositor {
     struct ThunderAudioNode* nodes;
-    size_t nodes_max_count;
-    size_t nodes_count;
-    float mix_down_volume;
-    thunder_audio_buffer buffer;
+    size_t nodesMaxCount;
+    size_t nodesCount;
+    float mixDownVolume;
+    ThunderAudioBuffer buffer;
     ThunderMixSample* output;
-    ThunderSample* output_16_bit;
+    ThunderSample* output16Bit;
 } ThunderAudioCompositor;
 
-void thunder_audio_compositor_init(ThunderAudioCompositor* self, struct ImprintAllocator* memory);
+void thunderAudioCompositorInit(ThunderAudioCompositor* self, struct ImprintAllocator* memory);
 
-void thunder_audio_compositor_update(ThunderAudioCompositor* self);
+void thunderAudioCompositorUpdate(ThunderAudioCompositor* self);
 
-void thunder_audio_compositor_reload(ThunderAudioCompositor* self);
+void thunderAudioCompositorReload(ThunderAudioCompositor* self);
 
-void thunder_audio_compositor_free(ThunderAudioCompositor* self);
+void thunderAudioCompositorFree(ThunderAudioCompositor* self);
 
 #endif

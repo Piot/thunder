@@ -5,7 +5,7 @@
 #include <clog/clog.h>
 #include <thunder/audio_node.h>
 
-void thunder_audio_node_init(ThunderAudioNode* self, ThunderAudioNodeOutputFunc func, void* other_self)
+void thunderAudioNodeInit(ThunderAudioNode* self, ThunderAudioNodeOutputFunc func, void* other_self)
 {
     self->output = func;
     CLOG_ASSERT(other_self != 0, "Must provide valid self")
