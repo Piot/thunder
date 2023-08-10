@@ -4,9 +4,9 @@ name = "piot/thunder"
 version = "0.0.0"
 
 [[dependencies]]
-name = 'piot/imprint'
+name = 'piot/basal-c'
 version = "*"
 
 [[dependencies]]
-name = 'piot/basal-c'
+name = 'piot/thunder-audio-buffer'
 version = "*"

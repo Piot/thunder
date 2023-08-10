@@ -6,8 +6,8 @@
 #define thunder_sound_compositor_h
 
 #include <stddef.h>
-#include <thunder/sound_buffer.h>
-#include <thunder/sound_types.h>
+#include <thunder-audio-buffer/sound_buffer.h>
+#include <thunder-audio-buffer/sound_types.h>
 
 struct ImprintMemory;
 struct ThunderAudioNode;

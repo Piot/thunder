@@ -5,7 +5,7 @@
 #ifndef thunder_audio_node_h
 #define thunder_audio_node_h
 
-#include <thunder/sound_types.h>
+#include <thunder-audio-buffer/sound_types.h>
 #include <stdbool.h>
 #include <stddef.h>
 

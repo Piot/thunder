@@ -5,7 +5,7 @@
 #include <clog/clog.h>
 #include <imprint/allocator.h>
 #include <thunder/audio_node.h>
-#include <thunder/sound_buffer.h>
+#include <thunder-audio-buffer/sound_buffer.h>
 #include <thunder/sound_compositor.h>
 
 #define THUNDER_ATOM_SAMPLE_COUNT (3200)
